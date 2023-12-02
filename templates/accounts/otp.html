@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card mx-auto p-5 mb-5" style="max-width:520px; margin-top:40px;" >
+    {% comment %} <article class="card-body"> {% endcomment %}
+      {% include "includes/alerts.html" %}
+      <header class="mb-4"><h4 class="card-title">otp Confirmation</h4></header>
+      <p>check the inbox of your email - {{email}} - and enter the otp<p>
+      <form action='otp_verification' method='POST'>
+          {% csrf_token %}
+          
+              <div class="form-row">
+                  <div class="col form-group">
+                      <label>otp</label>
+                      <input type="otp" class="form-control" placeholder="otp" name='otp'>
+                  </div> <!-- form-group end.// -->
+              </div> <!-- form-row end.// -->
+
+              <div class="">
+                  <button type="submit" class="btn btn-primary"> Confirm  </button>
+              </div> <!-- form-group// -->      
+        
+          </form>
+  </div> <!-- card .// -->
+
+{% endblock content %}

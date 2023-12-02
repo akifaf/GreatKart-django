@@ -1,0 +1,39 @@
+{% extends "admin/base1.html" %}
+{% load static %}
+{% block content %}
+
+<div class="col-md-6">
+    <div class="card pb-3">
+        <div class="card-header">
+            <div class="card-title">Profile</div>
+        </div>
+
+        <div class="user-box ">
+            {% if profile.image %}
+            <div class=""><img src="{% static " assets/img/profile.jpg" %}" alt="user">
+            </div>
+            {% endif %}
+            <div class="u-text">
+                <p class="">Username:<b> {{ profile.username}}</b></p>
+                <p class="">First Name:<b> {{ profile.first_name}}</b></p>
+                <p class="">Last Name:<b> {{ profile.last_name}}</b></p>
+                <p class="">Email: <b>{{ profile.email}}</b></p>
+                <p class="">Date Joined: <b>{{ profile.date_joined}}</b></p>
+                <p class="">Last Login: <b>{{ profile.last_login}}</b></p>
+                {% comment %} <p class="">Is Active: <b>{% if profile.is_active %}<span class="badge badge-success">d</span>{% else %}<span class="badge badge-danger">x</span></b></p>{% endif %} {% endcomment %}
+                {% comment %} <p class="">Is SuperUser: <b>{% if profile.is_superadmin %}<span class="badge badge-success">d</span>{% else %}<span class="badge badge-danger">x</span></b></p>{% endif %} {% endcomment %}
+              {% if profile.is_active %}
+            <a href="{% url 'block_user' profile.pk %}" class="btn btn-danger btn-sm">Block </a>
+             {% else %}
+             <a href="{% url 'unblock_user' profile.pk %}" class="btn btn-success btn-sm"><b>Unblock </a>
+             {% endif %}
+                
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock content %}

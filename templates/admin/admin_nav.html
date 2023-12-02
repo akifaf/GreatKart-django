@@ -1,0 +1,226 @@
+{% load static %}
+<div class="wrapper">
+    <div class="main-header">
+        <div class="logo-header">
+            <a href="index.html" class="logo">
+                Django Administration
+            </a>
+            <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
+                data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <button class="topbar-toggler more"><i class="la la-ellipsis-v"></i></button>
+        </div>
+        <nav class="navbar navbar-header navbar-expand-lg">
+            <div class="container-fluid">
+
+                <form class="navbar-left navbar-form nav-search mr-md-3" action="">
+                    <div class="input-group">
+                        <input type="text" placeholder="Search ..." class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="la la-search search-icon"></i>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+                <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                    {% comment %} <li class="nav-item dropdown hidden-caret">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="la la-envelope"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown hidden-caret">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="la la-bell"></i>
+                            <span class="notification">3</span>
+                        </a>
+                        <ul class="dropdown-menu notif-box" aria-labelledby="navbarDropdown">
+                            <li>
+                                <div class="dropdown-title">You have 4 new notification</div>
+                            </li>
+                            <li>
+                                <div class="notif-center">
+                                    <a href="#">
+                                        <div class="notif-icon notif-primary"> <i class="la la-user-plus"></i> </div>
+                                        <div class="notif-content">1`` <span class="block">
+                                                New user registered
+                                            </span>
+                                            <span class="time">5 minutes ago</span>
+                                        </div>
+                                    </a>
+                                    <a href="#">
+                                        <div class="notif-icon notif-success"> <i class="la la-comment"></i> </div>
+                                        <div class="notif-content">
+                                            <span class="block">
+                                                Rahmad commented on Admin
+                                            </span>
+                                            <span class="time">12 minutes ago</span>
+                                        </div>
+                                    </a>
+                                    <a href="#">
+                                        <div class="notif-img">
+                                            <img src="" alt="Img Profile">
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">
+                                                Reza send messages to you
+                                            </span>
+                                            <span class="time">12 minutes ago</span>
+                                        </div>
+                                    </a>
+                                    <a href="#">
+                                        <div class="notif-icon notif-danger"> <i class="la la-heart"></i> </div>
+                                        <div class="notif-content">
+                                            <span class="block">
+                                                Farrah liked Admin
+                                            </span>
+                                            <span class="time">17 minutes ago</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="see-all" href="javascript:void(0);"> <strong>See all notifications</strong> <i
+                                        class="la la-angle-right"></i> </a>
+                            </li>
+                        </ul>
+                    </li> {% endcomment %}
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+                            {% if usre.image %}
+                            <img src="{{ user.image }}" width="36"
+                            class="img-circle">
+                            {% else %}
+                            <i class="la la-user"></i>
+                            {% endif %}
+                           <span class='p-0'>Welcome {{ user.username }}</span> </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <div class="user-box">
+                                    {% if user.image %}
+                                    <div class="u-img"><img src="{{ user.image }}" alt="user">
+                                    </div>
+                                    {% else %}
+                                    <div class="u-text pt-2">
+                                        <i class="la la-user"></i>
+                                    </div>
+                                    {% endif %}
+                                    <div class="u-text">
+                                        <h4>{{ user.first_name }}</h4>
+                                        <p class="text-muted">{{ user.email }}</p><a href="profile.html"
+                                            class="btn btn-rounded btn-danger btn-sm">View Profile</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#"><i class="ti-user"></i> My Profile</a>
+                            <a class="dropdown-item" href="#"></i> My Balance</a>
+                            <a class="dropdown-item" href="#"><i class="ti-email"></i> Inbox</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#"><i class="ti-settings"></i> Account Setting</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'admin_logout' %}"><i class="fa fa-power-off"></i> Logout</a>
+                        </ul>
+                        <!-- /.dropdown-user -->
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="sidebar">
+        <div class="scrollbar-inner sidebar-wrapper">
+            <div class="user">
+                <div class="photo">
+                    <img src="{% static "assets/img/profile.jpg" %}">
+                </div>
+                <div class="info">
+                    <a class="" data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+                        <span>
+                            {{ user.username }}
+                            <span class="user-level">Administrator</span>
+                            <span class="caret"></span>
+                        </span>
+                    </a>
+                    <div class="clearfix"></div>
+
+                    <div class="collapse in" id="collapseExample" aria-expanded="true" styles="">
+                        <ul class="nav">
+                            <li>
+                                <a href="#profile">
+                                    <span class="link-collapse">My Profile</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#edit">
+                                    <span class="link-collapse">Edit Profile</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#settings">
+                                    <span class="link-collapse">Settings</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav">
+                <li class="nav-item {% if '/admin_dashboard' in request.path %}active{% endif %}">
+                    <a href="{% url 'admin_dashboard' %}">
+                        <i class="la la-dashboard"></i>
+                        <p>Dashboard</p>
+                        <span class="badge badge-count">5</span>
+                    </a>
+                </li>
+                <li class="nav-item {% if '/user_management' in request.path %}active{% endif %} ">
+                    <a href="{% url 'user_management' %}">
+                        <i class="la la-table"></i>
+                        <p>User Management</p>
+                        <span class="badge badge-count">14</span>
+                    </a>
+                </li>
+                <li class="nav-item {% if '/product' in request.path %}active{% endif %} ">
+                    <a href="{% url 'product' %}">
+                        <i class="la la-keyboard-o"></i>
+                        <p>Product</p>
+                        <span class="badge badge-count">50</span>
+                    </a>
+                </li>
+                <li class="nav-item {% if '/category' in request.path %}active{% endif %} ">
+                    <a href="{% url 'category' %}">
+                        <i class="la la-th"></i>
+                        <p>Category</p>
+                        <span class="badge badge-count">6</span>
+                    </a>
+                </li>
+                {% comment %} <li class="nav-item {% if '/admin_dashboard' in request.path %}active{% endif %} ">
+                    <a href="notifications.html">
+                        <i class="la la-bell"></i>
+                        <p>Notifications</p>
+                    </a>
+                </li>
+                <li class="nav-item {% if '/admin_dashboard' in request.path %}active{% endif %} ">
+                    <a href="typography.html">
+                        <i class="la la-font"></i>
+                        <p>Typography</p>
+                        {% comment %} <span class="badge badge-danger">25</span> 
+                    </a>
+                </li> {% endcomment %}
+                <li class="nav-item">
+                    <a href="icons.html">
+                        <i class="la la-fonticons"></i>
+                        <p>Icons</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>

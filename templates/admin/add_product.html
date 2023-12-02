@@ -1,0 +1,108 @@
+{% extends "admin/base1.html" %}
+{% block content %}
+
+<div class="container-fluid">
+    {% include "includes/alerts.html" %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+
+                <div class="card-header">
+                    <div class="card-title">Add Product</div>
+                    <hr>
+                <div class="card-body">
+                    <form action="" method='POST' enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group from-show-notify row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="product_name">Product Name :</label>
+                            </div>
+                            <div class="col-lg-6 col-md-9 col-sm-12">
+                                <input type="text" class="form-control" Required name="product_name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="slug">Slug :</label>
+                            </div>
+                            <div class="col-lg-6 col-md-9 col-sm-12">
+                                <input type="text" class="form-control" Required name="slug">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="description">Description :</label>
+                            </div>
+                            <div class="col-lg-8 col-md-9 col-sm-12">
+                                <textarea  rows="10"  class="form-control" Required  name="description"></textarea>
+                                
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="price">price :</label>
+                            </div>
+                            <div class="col-lg-4 col-md-9 col-sm-12">
+                                <input type="number" class="form-control" Required  name="price" >
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="image">Image :</label>
+                            </div>
+                            <div class="col-lg-8 col-md-12 col-sm-12">
+                                {% comment %} <p>Currently: "<a href="{{ product.image }}"> {{ product.image }}" </a> </p> {% endcomment %}
+                                <p>Change <input type="file" name="image" Required class='form-control'> </p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="stock">Stock :</label>
+                            </div>
+                            <div class="col-lg-4 col-md-9 col-sm-12">
+                                <input type="number" class="form-control" Required  name="stock">
+                            </div>
+                        </div>
+                        {% comment %} <div class="form-group row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="is_available" class="form-check-label">Is Available :</label>
+                            </div>
+                            {% if product.is_available %}
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" value="" checked>
+                                <span class="form-check-sign"></span>
+                            </label>
+                            {% else %}
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" value="" >
+                                <span class="form-check-sign"></span>
+                            </label>
+                            {% endif %}
+                        </div> {% endcomment %}
+                        <div class="form-group from-show-notify row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="category">Category :</label>
+                            </div>
+                            <div class="col-lg-4 col-md-9 col-sm-12">
+                               
+                                <select class="form-control"  name="category">
+                                    {% for category in categories  %}
+                                    <option value="{{ category.id }}" name='category'>{{ category }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-9 col-sm-12">
+                            <button type='submit' class="btn btn-primary">Save</button>
+                        </div>
+                        
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock content %}

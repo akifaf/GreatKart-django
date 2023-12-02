@@ -1,0 +1,43 @@
+{% extends "admin/base1.html" %}
+{% block content %}
+<div class='ml-4'>
+    <h3>User Management</h3>
+</div>
+<div class="col">
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-head-bg-primary table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">First name</th>
+                        <th scope="col">Last name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Last login</th>
+                        <th scope="col">Date Joined</th> 
+                        <th scope="col">Is Acitve</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><a href='{% url 'profile' user.id %}'>{{ user.username}}</a></td>
+                        <td>{{ user.first_name}}</td>
+                        <td>{{ user.last_name}}</td>
+                        <td>{{ user.email}}</td>
+                        <td>{{ user.last_login}}</td>
+                        <td>{{ user.date_joined}}</td>
+                        {% if user.is_active %}
+                        <td><i class="la la-check"></i></td>
+                        {% else %}
+                        <td><i class="la la-close"></i></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

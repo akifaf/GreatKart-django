@@ -1,0 +1,46 @@
+{% extends "admin/base1.html" %}
+{% block content %}
+<div class="ml-5 mb-4">
+<div class="row ">
+    <h3>Products</h3>
+</div> 
+<div class="row ">
+    <a href="{% url 'add_product' %}"><button type='submit' class="btn btn-primary float-right ">Add Product</button></a>
+</div>
+</div>
+
+<div class="col">
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-head-bg-primary table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Product name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Deleted</th>
+                    </tr>
+                </thead>  
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td><a href='{% url 'edit_product' product.id %}'>{{ product.product_name}}</a></td>
+                        <td>{{ product.price}}</td>
+                        <td>{{ product.stock}}</td>
+                        <td>{{ product.category}}</td>
+                        {% if product.deleted %}
+                        <td><a href="{% url 'undelete_product' product.pk %}" class="btn btn-primary btn-sm">Add </a></td>
+                        {% else %}
+                        <td><a href="{% url 'delete_product' product.pk %}" class="btn btn-danger btn-sm">Delete </a></td>
+                        {% endif %}
+                        
+                    </tr>
+                    {% endfor %}
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}
