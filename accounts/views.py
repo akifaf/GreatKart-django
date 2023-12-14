@@ -1,20 +1,22 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import  render, redirect
-from django.contrib import messages, auth
-
-from carts.models import Cart, CartItem
-from carts.views import _cart_id
-from .models import Account
-from .forms import RegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
+from django.contrib import messages, auth
+
+from carts.views import _cart_id
+from carts.models import Cart, CartItem
+from orders.forms import AddressForm, RefundForm
+from orders.models import Address, Order, OrderProduct, Refund
+from .models import Account
+from .forms import RegistrationForm, UserForm
+
 import random
 from django.core.mail import send_mail
-from django.contrib.auth.hashers import make_password
 import requests
 
-# # VERIFICATION EMAIL
+# VERIFICATION EMAIL
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -52,6 +54,8 @@ def login(request):
         email = request.POST['email']
         password = request.POST['password']
         user = auth.authenticate(email=email, password=password)
+        if_user = Account.objects.get(email=email)
+        
         if user is not None:
             try:
                 cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -101,7 +105,14 @@ def login(request):
                     return redirect(nextPage)
             except:
                 return redirect('dashboard')
+            
+        elif if_user.is_blocked == True:
+            print(if_user.is_blocked)
+            print('I donot know why am here')
+            messages.error(request, 'You are blocked')
+            return redirect('login')
         else:
+            print('I should be here')
             messages.error(request, 'Invalid Credentials')
             return redirect('login')
     return render (request, 'accounts/login.html')
@@ -143,7 +154,15 @@ def logout(request):
 
 @login_required(login_url='login')
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html')
+    current_user = request.user
+    user = Account.objects.get(email=current_user.email)
+    orders = Order.objects.order_by('created_at').filter(user_id=user.id, is_ordered=True)
+    orders_count = orders.count()
+    context = {
+        'user':user,
+        'orders_count':orders_count,
+    }
+    return render(request, 'accounts/dashboard.html', context)
 
 
 
@@ -200,6 +219,151 @@ def resetPassword(request):
             return redirect("resetPassword")
     else:
         return render(request, 'accounts/resetPassword.html')
+
+@login_required(login_url='login')
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+    context = {
+        'orders':orders
+    }
+    return render(request, 'accounts/my_orders.html', context)
+
+@login_required(login_url='login')
+def my_address(request):
+    addresses = Address.objects.filter(user=request.user)
+    context = {
+        'addresses':addresses
+    }
+    return render(request, 'accounts/my_address.html', context)
+
+def edit_address(request, id):
+    address = Address.objects.get(pk=id)
+    address_form = AddressForm(instance=address)     
+    context = {
+        'address_form':address_form,
+        'address':address,
+    }
+    if request.method == "POST":
+        address.first_name = request.POST['first_name']
+        address.last_name = request.POST['last_name']
+        address.email = request.POST['email']
+        address.phone_number = request.POST['phone_number']
+        address.address_line_1 = request.POST['address_line_1']
+        address.address_line_2 = request.POST['address_line_2']
+        address.state = request.POST['state']
+        address.city = request.POST['city']
+        address.country = request.POST['country']
+        address.pincode = request.POST['pincode']
+        address.save()
+        messages.success(request, "Your address has been updated")
+        return redirect('my_address')
+    return render(request, 'accounts/edit_address.html', context)
+
+@login_required(login_url='login')
+def delete_address(request, id):
+    address = Address.objects.get(id=id)
+    address.delete()
+    return redirect('my_address')
+
+@login_required(login_url='login')
+def edit_profile(request):
+    user = Account.objects.get(email=request.user)
+    if request.method == "POST":
+        user_form = UserForm(request.POST, request.FILES, instance=request.user)
+        if user_form.is_valid():
+            print('mai yaha hoon')
+            user_form.save()
+            messages.success(request, "Your profile has been updated")        
+            return redirect('edit_profile')
+    else:
+        user_form = UserForm(instance=request.user)
+    context = {
+        'user_form':user_form,
+        'user':user
+    }
+    return render(request, 'accounts/edit_profile.html', context)
+
+@login_required(login_url='login')
+def change_password(request):
+    if request.method == "POST":
+        current_password = request.POST['current_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+        user = Account.objects.get(username__exact=request.user.username)
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Password updated successfully')
+                return redirect('change_password')
+            else:
+                messages.error(request, 'Please enter valid current password')
+                return redirect('change_password')
+        else:
+            messages.error(request, 'Password doesnot match')
+            return redirect('change_password')            
+    return render(request, 'accounts/change_password.html')
+
+@login_required(login_url='login')
+def order_detail(request, order_id):
+    order_detail = OrderProduct.objects.filter(order__order_number=order_id)
+    order = Order.objects.get(order_number=order_id)
+    subtotal = 0
+    for i in order_detail:
+        subtotal += i.product_price * i.quantity
+    context = {
+        'order_detail':order_detail,
+        'order':order,
+        'subtotal':subtotal
+    }
+    return render(request, 'accounts/order_detail.html', context)
+
+    
+
+def cancel_order(request, order_id):
+    print('I was called')
+    order = Order.objects.get(order_number=order_id)
+    if order.status:
+        print('I was here')
+        order.status = 'Cancelled'
+        order.save()
+        messages.success(request, "Order Cancelled Successfully.")
+    return redirect('my_orders')
+    
+
+
+
+def request_refund(request, order_id):
+    form = RefundForm()
+    order = Order.objects.get(order_number=order_id)
+    context = {
+        'form':form,
+        'order':order
+    }
+    if request.method == "POST":
+        form = RefundForm(request.POST)
+        if form.is_valid():
+            ref_number = form.cleaned_data['order_number']
+            reason = form.cleaned_data['reason']
+            email = form.cleaned_data['email']
+            try:
+                order = Order.objects.get(order_number=ref_number)
+                order.refund_requested = True
+                order.status = 'hold'
+                order.save()
+
+                refund = Refund()
+                refund.order = order
+                refund.reason = reason
+                refund.email = email
+                refund.save()
+                messages.info(request, "Your request was received.")
+                return redirect('my_orders')
+            except:
+                messages.error(request, "This order doesnot exists")
+                return redirect('my_orders')
+    return render(request, 'accounts/request_refund.html', context)
 
 # # VERIFICATION EMAIL
 # from django.contrib.sites.shortcuts import get_current_site

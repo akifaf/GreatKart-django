@@ -215,12 +215,25 @@
                         {% comment %} <span class="badge badge-danger">25</span> 
                     </a>
                 </li> {% endcomment %}
-                <li class="nav-item">
-                    <a href="icons.html">
-                        <i class="la la-fonticons"></i>
-                        <p>Icons</p>
+                <li class="nav-item {% if '/order_management' in request.path %}active{% endif %}">
+                    <a data-toggle="collapse" href="#collapseCategory" aria-expanded="false">
+                        <i class="la la-th"></i>
+                        <p>Order Management</p>
+                        <span class="badge badge-count">6</span>
                     </a>
+                    <div class="collapse" id="collapseCategory">
+                        <ul class="nav flex-column">
+                            <li class="nav-item {% if '/order_management' in request.path %}active{% endif %}">
+                                <a href="{% url "order_management" %}" class="nav-link">Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link">Ordered Products</a>
+                            </li>
+                            <!-- Add more options as needed -->
+                        </ul>
+                    </div>
                 </li>
             </ul>
+            
         </div>
     </div>

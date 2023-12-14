@@ -13,8 +13,8 @@ def store(request, category_slug=None):
 
     if category_slug != None:
         categories = get_object_or_404(Category, slug=category_slug)
-        products = Product.objects.filter(category=categories, deleted=False)
-        paginator = Paginator(products, 1)
+        products = Product.objects.filter(category=categories, deleted=False, category__deleted=False)
+        paginator = Paginator(products, 3)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         product_count = products.count()
@@ -55,3 +55,9 @@ def search(request):
         'product_count':product_count,
     }
     return render(request, 'store/store.html', context)
+
+
+# hello _________
+# alkdfjo
+#ksdfjoiasj
+

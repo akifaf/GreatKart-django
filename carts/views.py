@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
+
+from orders.models import Address
 from .models import Cart, CartItem
 from store.models import Product, Variation
 from django.core.exceptions import ObjectDoesNotExist
@@ -196,6 +198,11 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         grand_total=0
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+            is_address_exists = Address.objects.filter(user=request.user).exists()
+            if is_address_exists:
+                address = Address.objects.filter(user=request.user)
+            else:
+                return redirect('/orders/shipping_address?next=/carts/checkout')
         else:
             cart = Cart.objects.get(cart_id=_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
@@ -212,8 +219,7 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'cart_items':cart_items,
         'tax':tax,
         'grand_total':grand_total,
+        'address':address
     }
     return render(request, 'store/checkout.html', context)
 
-def shipping_address(request):
-    return render(request, 'store/shipping_address.html')

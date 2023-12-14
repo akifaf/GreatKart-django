@@ -1,0 +1,96 @@
+{% extends "admin/base1.html" %}
+{% block content %}
+
+<div class="container-fluid">
+    {% include "includes/alerts.html" %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Edit Order </div>
+                    <hr>
+                <div class="card-body">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <lable><b>User</b></lable>
+                            </div>
+                            <div class="form-group col-md-9">
+                                {{ order_form.user }}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <lable><b>payment_method</b></lable>                            
+                            </div>
+                            <div class="form-group col-md-9">
+                                {{ order_form.payment_method }}                                
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <lable><b>Address</b></lable>                            
+                            </div>
+                            <div class="form-group col-md-9">
+                                <p>{{ order_form.instance.address.full_address }}
+                                <br>{{ order_form.instance.address.state}}, 
+                                <br>{{ order_form.instance.address.city}}, 
+                                <br>{{ order_form.instance.address.pincode}}, 
+                            </p>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <lable><b>order_number</b></lable>                            
+                            </div>
+                            <div class="form-group col-md-9">
+                                {{ order_form.order_number }}                                
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <lable><b>order_total</b></lable>                            
+                            </div>
+                            <div class="form-group col-md-9">
+                                {{ order_form.order_total }}                                
+                            </div>
+                        </div>
+                     
+                        {% comment %} <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <lable><b>Refund requested</b></lable>                            
+                            </div>
+                            <div class="form-group col-md-9">
+                                {{ order_form.refund_requested }}                                
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <lable><b>Refund granted</b></lable>                            
+                            </div>
+                            <div class="form-group col-md-9">
+                                {{ order_form.refund_granted }}                                
+                            </div> {% endcomment %}
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <lable><b>Status</b></lable>                            
+                            </div>
+                            <div class="form-group col-md-9">
+                                {{ order_form.status }}                                
+                            </div>
+                        </div>
+                        <div>
+                            <input type="submit" class="btn btn-success" value="Save">
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock content %}

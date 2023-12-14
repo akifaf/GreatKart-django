@@ -20,6 +20,12 @@ class Product(models.Model):
     def get_url(self):
         return reverse('product_detail', args=[self.category.slug, self.slug])
 
+
+    def total_stock(self):
+        variations = self.productvariation_set.all()
+        total_stock = sum(variation.stock for variation in variations)
+        return total_stock
+
     def __str__(self):
         return self.product_name    
 
@@ -45,4 +51,19 @@ class Variation(models.Model):
     objects = VaritationManager()
 
     def __str__(self):
-        return self.variation_value
+        return f'{self.variation_category} : {self.variation_value} '
+    
+class ProductVariation(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_variations = models.ManyToManyField(Variation, blank=True)
+    stock = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.product}'
+
+# def total_stock(self):
+#     variations = self.variation_set.all()
+#     total_stock = sum(variation.stock for variation in variations)
+#     return total_stock
+
+# hello........

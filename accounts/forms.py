@@ -25,8 +25,23 @@ class RegistrationForm(forms.ModelForm):
         cleaned_data = super(RegistrationForm, self).clean()
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
+        phone_number = str(cleaned_data.get('phone_number'))
 
         if password != confirm_password:
             raise forms.ValidationError(
                 "Password does not match!"
             )
+
+        if not phone_number.isdigit() or len(phone_number) != 10 or phone_number.startswith('0'):
+            raise forms.ValidationError('Invalid phone number.')
+        
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ('first_name', 'last_name', 'phone_number', 'address_line_1', 'address_line_2', 'profile_picture', 'city', 'state', 'country')
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'

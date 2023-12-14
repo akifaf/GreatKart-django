@@ -6,9 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 
 from accounts.models import Account
+from orders.models import Order, OrderProduct
 from store.models import Product
 from category.models import Category
-from .forms import CategoryForm, ProductForm
+from .forms import CategoryForm, OrderForm, ProductForm
 from customadmin import forms
 from django.contrib.auth.decorators import user_passes_test
 
@@ -37,8 +38,8 @@ def admin_login(request):
     return render(request, 'admin/admin_login.html')
 
 
-@user_passes_test(user_is_admin, login_url='/admin_login/')
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
 @never_cache
 def admin_dashboard(request):
     users = Account.objects.filter(is_superadmin=False)
@@ -49,14 +50,16 @@ def admin_dashboard(request):
     }
     return render(request, 'admin/admin_dashboard.html', context)
 
-
-@user_passes_test(user_is_admin, login_url='/admin_login/')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def admin_logout(request):
     auth.logout(request)
     messages.info(request, "You are Logged out")
     return redirect('admin_login')
 
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
 @never_cache
 def user_management(request):    
     users = Account.objects.filter(is_superadmin=False)
@@ -66,7 +69,9 @@ def user_management(request):
         'users':users
     }
     return render(request, 'admin/user_management.html', context)
-
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def profile(request, pk):
     try:
         profile = Account.objects.get(pk=pk)
@@ -77,23 +82,30 @@ def profile(request, pk):
     }
     return render(request,'admin/profile.html', context)
 
-
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def block_user(request, pk):
     user = Account.objects.get(pk=pk)
     user.is_active=False
+    user.is_blocked=True
     user.save()
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
     # return redirect('/customadmin/user_management')
-
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def unblock_user(request, pk):
     user = Account.objects.get(pk=pk)
     user.is_active=True
+    user.is_blocked=False
     user.save()
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
     # return redirect('/customadmin/user_management')
 
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
 @never_cache
 def product(request):
     products = Product.objects.all()
@@ -103,7 +115,9 @@ def product(request):
     }
     return render(request,'admin/product.html', context)
 
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def add_product(request):
     categories = Category.objects.all()
     context = {'categories':categories}
@@ -134,6 +148,9 @@ def add_product(request):
 
     return render(request, 'admin/add_product.html', context)
 
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def edit_product(request, pk):
     product = Product.objects.get(pk=pk)
     product_form = ProductForm(instance=product)
@@ -169,7 +186,9 @@ def edit_product(request, pk):
 
     return render(request, 'admin/edit_product.html', context)
     
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def delete_product(request, pk):
     product = Product.objects.get(pk=pk)
     print(product.product_name)
@@ -177,7 +196,9 @@ def delete_product(request, pk):
     product.save()
     return redirect('/customadmin/product')
 
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def undelete_product(request, pk):
     product = Product.objects.get(pk=pk)
     print(product.product_name)
@@ -186,8 +207,9 @@ def undelete_product(request, pk):
     return redirect('/customadmin/product')
 
 
-
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def category(request):
     categories = Category.objects.all()
     context = {
@@ -195,7 +217,9 @@ def category(request):
     }
     return render(request,'admin/category.html', context)
 
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def add_category(request):
     categories = Category.objects.all()
     context = {'categories':categories}
@@ -219,7 +243,9 @@ def add_category(request):
 
     return render(request, 'admin/add_category.html', context)
 
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def edit_category(request, pk):
     category = Category.objects.get(pk=pk)
     category_form = CategoryForm(instance=category)
@@ -246,19 +272,83 @@ def edit_category(request, pk):
 
     return render(request, 'admin/edit_category.html', context)
     
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def delete_category(request, pk):
     category = Category.objects.get(pk=pk)
     category.deleted = True
     category.save()
     return redirect('/customadmin/category')
 
-@login_required(login_url='admin_login')
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
 def undelete_category(request, pk):
     category = Category.objects.get(pk=pk)
     category.deleted = False
     category.save()
     return redirect('/customadmin/category')
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def order_management(request):
+    orders = Order.objects.filter(is_ordered=True)
+    context = {
+        'orders':orders
+    }
+    return render(request,'admin/order_management.html', context)
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def view_order_detail(request, order_id):
+    orders = Order.objects.get(order_number=order_id)
+    order_product = OrderProduct.objects.filter(order__order_number=order_id)
+    subtotal = 0
+    for i in order_product:
+        subtotal = i.product_price * i.quantity
+    context = {
+        'orders':orders,
+        'order_product':order_product,
+        'subtotal':subtotal
+    }
+    return render(request, 'admin/view_order_detail.html', context) 
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def change_order_status(request, order_id):
+    orders = Order.objects.get(order_number=order_id)
+    if request.method == "POST":        
+        status = request.POST['status']
+        orders.status = status
+        orders.save()
+        messages.success(request, "Order status has been updated")   
+    else:
+        order_form = OrderForm(instance=request.user)
+    order_form = OrderForm(instance=orders)
+    context = {
+            'orders':orders,
+            'order_form':order_form,
+        }
+       
+    return render(request, 'admin/change_order_status.html', context)
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def admin_cancel_order(request, order_id):
+    print('I was called')
+    order = Order.objects.get(order_number=order_id)
+    if order.status:
+        print('I was here')
+        order.status = 'Cancelled'
+        order.save()
+        messages.success(request, "Order Cancelled Successfully.")
+    return redirect('order_management')
+    
 
 
 

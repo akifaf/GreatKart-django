@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 
 def home(request):
-    products = Product.objects.all().filter(deleted=False)
+    products = Product.objects.all().filter(deleted=False, category__deleted=False)
 
     context = {
         'products':products,

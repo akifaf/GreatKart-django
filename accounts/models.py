@@ -45,6 +45,12 @@ class Account(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
     phone_number = models.IntegerField(default=0)
+    address_line_1 = models.CharField(max_length=200, blank=True)
+    address_line_2 = models.CharField(max_length=200, blank=True)
+    profile_picture = models.ImageField(blank=True, upload_to='userprofile')
+    city = models.CharField(max_length=20, blank=True)
+    state = models.CharField(max_length=20, blank=True)
+    country = models.CharField(max_length=20, blank=True)
 
     #required
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -69,3 +75,6 @@ class Account(AbstractBaseUser):
     
     def has_module_perms(self, add_label):
         return True
+    
+    def full_address(self):
+        return f'(self.address_line_1) (self.address_line_2)'

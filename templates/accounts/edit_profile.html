@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section-conten padding-y bg">
+
+{% include "includes/alerts.html" %}
+
+    <div class="container">
+        <div class="row">
+       {% include "includes/dashboard_sidebar.html" %}
+        <main class="col-md-9">
+            <article class="card">
+            <header class="card-header">
+                <strong class="d-inline-block mr-3">Edit Your Profile</strong>
+            </header>
+            <div class="card-body">
+                {% if user.profile_picture %}
+                <div class='text-center mb-4'>
+                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" width="100" style="border-radius:50%;">
+                </div>
+                {% endif %}
+                <div class="row">    
+                    <div class="col-md-12">
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <lable><b>First Name</b></lable>
+                                    {{ user_form.first_name }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <lable><b>Last Name</b></lable>
+                                    {{ user_form.last_name }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <lable><b>Phone Number</b></lable>
+                                    {{ user_form.phone_number }}                                
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <lable><b>Profile picture</b></lable>
+                                    {{ user_form.profile_picture }}                                
+                                </div>
+                            </div>
+                                <div class="form-group">
+                                    <lable><b>Address Line 1</b></lable>
+                                    {{ user_form.address_line_1 }}
+                                </div>
+                                <div class="form-group">
+                                    <lable><b>Address Line 2</b></lable>
+                                    {{ user_form.address_line_2 }}                                
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <lable><b>City</b></lable>
+                                        {{ user_form.city }}                                    
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <lable><b>State</b></lable>
+                                        {{ user_form.state }}                                    
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <lable><b>Country</b></lable>
+                                        {{ user_form.country }}                                    
+                                    </div>
+                                </div>
+                                <input type="submit" class="btn btn-primary" value="Save">
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div> <!-- table-responsive .end// -->
+            </article> <!-- order-group.// --> 
+        </main>
+    </div> <!-- row.// -->
+    </div>
+    
+    
+    </section>
+
+{% endblock content %}
