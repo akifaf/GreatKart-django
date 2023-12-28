@@ -22,83 +22,9 @@
                             </div>
                         </div>
                         {% endfor %}
-                        {% comment %} <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="slug">Slug :</label>
-                            </div>
-                            <div class="col-lg-6 col-md-9 col-sm-12">
-                                {{ product_form.product_name }}
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="description">Description :</label>
-                            </div>
-                            <div class="col-lg-8 col-md-9 col-sm-12">
-                                {{ product_form.product_name }}
-                                
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="price">price :</label>
-                            </div>
-                            <div class="col-lg-4 col-md-9 col-sm-12">
-                                {{ product_form.product_name }}
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="image">Image :</label>
-                            </div>
-                            <div class="col-lg-8 col-md-12 col-sm-12">
-                                <p>Currently: "<a href="{{ product.image }}"> {{ product.image }}" </a> </p>
-                                <p>Change <input type="file" name="image" accept="image/*" id="id_image"> </p>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="stock">Stock :</label>
-                            </div>
-                            <div class="col-lg-4 col-md-9 col-sm-12">
-                                <input type="number" class="form-control" value="{{ product.stock }}">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="is_available" class="form-check-label">Is Available :</label>
-                            </div>
-                            {% if product.is_available %}
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" value="" checked>
-                                <span class="form-check-sign"></span>
-                            </label>
-                            {% else %}
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" value="" >
-                                <span class="form-check-sign"></span>
-                            </label>
-                            {% endif %}
-                        </div>
-                        <div class="form-group from-show-notify row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="category">Category :</label>
-                            </div>
-                            <div class="col-lg-4 col-md-9 col-sm-12">
-                                <select class="form-control input-fixed">
-                                    {% for category in categories  %}
-                                    <option value="plain" {% if category == product.category %}selected{% endif %}>{{ category }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div> {% endcomment %}
                         <div class="col-lg-4 col-md-9 col-sm-12">
                             <button type='submit' class="btn btn-primary">Save</button>
-                        </div>
-                        {% comment %} <div class="col-lg-4 col-md-9 col-sm-12">
-                            <a href="{% url 'delete_product' product.pk %}" class="btn btn-danger btn-sm">Delete </a>
-                        </div> {% endcomment %}
-                        
+                        </div>                        
                     </form>
                 </div>
             </div>

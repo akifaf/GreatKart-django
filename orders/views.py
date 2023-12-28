@@ -1,15 +1,17 @@
 import datetime
-from django.http import HttpResponse
+import json
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
 import requests
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.views.decorators.cache import never_cache
 
 from carts.models import CartItem
 from orders.forms import AddressForm, RefundForm
 from orders.models import Address, Order, OrderProduct, Payment, Refund
-from store.models import Product
+from store.models import Product, Variation
 
 # Create your views here.
 
@@ -55,6 +57,7 @@ def shipping_address(request):
     }
     return render(request, 'store/shipping_address.html', context)
 
+@never_cache
 def place_order(request, total=0, quantity=0):
     current_user = request.user
 
@@ -105,75 +108,138 @@ def place_order(request, total=0, quantity=0):
         return render(request, 'orders/payments.html', context)
     else:
         return redirect("checkout")
-    
+
+@never_cache
 def cod(request, order_id):
     current_user = request.user
     order = Order.objects.get(user=current_user, is_ordered=False, id=order_id)
-    if order.payment_method == 'COD':
-        order.status = 'Ordered'
-        order.is_ordered = True
-        order.save()
-        
-        # Move the cart item into order product table
-        cart_items = CartItem.objects.filter(user=current_user)
-        for item in cart_items:
-            orderproduct = OrderProduct()
-            orderproduct.order_id = order.id
-            orderproduct.user_id = request.user.id
-            orderproduct.product_id = item.product_id
-            orderproduct.quantity = item.quantity
-            orderproduct.product_price = item.product.price
-            orderproduct.ordered = True
-            orderproduct.save()
+    order.status = 'Ordered'
+    order.is_ordered = True
+    order.save()
+    order.is_ordered = True
+    order.save()
+    
+    # Move the cart item into order product table
+    cart_items = CartItem.objects.filter(user=current_user)
+    for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        orderproduct.product_id = item.product_id
+        orderproduct.quantity = item.quantity
+        orderproduct.user_id = request.user.id
+        orderproduct.save()
+        cart_item = CartItem.objects.get(id=item.id)
+        product_variation = cart_item.variations
+        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+        orderproduct.variations = product_variation
+        orderproduct.save()
 
-            cart_item = CartItem.objects.get(id=item.id)
-            product_variation = cart_item.variations.all()
-            orderproduct = OrderProduct.objects.get(id=orderproduct.id)
-            orderproduct.variations.set(product_variation)
-            orderproduct.save()
+    # Reduce the quantity of sold products
+        product_variation = Variation.objects.get(id=item.variations.id)
+        print(product_variation, "form orders page")
+        product_variation.stock -= item.quantity
+        product_variation.save()
+    
+    # Clear cart
+    CartItem.objects.filter(user=request.user).delete()
 
-        # Reduce the quantity of sold products
-            product = Product.objects.get(id=item.product_id)
-            product.stock -= item.quantity
-            product.save()
-        
-        # Clear cart
-        CartItem.objects.filter(user=request.user).delete()
+    # Send order recieved email to the customer
+    mail_subject = "Thank you for your order"
+    message = render_to_string('orders/order_recieved_email.html', {
+        'user': request.user,
+        'order':order,
+    })
+    to_email = request.user.email
+    send_email = EmailMessage(mail_subject, message, to=[to_email])
+    send_email.send()
+    order_number = order.order_number
+    redirect_url =  f"/orders/order_complete?order_number={order_number}"
+    return redirect(redirect_url)
 
-        # Send order recieved email to the customer
-        mail_subject = "Thank you for your order"
-        message = render_to_string('orders/order_recieved_email.html', {
-            'user': request.user,
-            'order':order,
-        })
-        to_email = request.user.email
-        send_email = EmailMessage(mail_subject, message, to=[to_email])
-        send_email.send()
-        order_number = order.order_number
-        request.session['order_number'] = order_number
-        return redirect('order_complete')
-
-
-
+@never_cache
 def payments(request):
-    return render(request, 'orders/payments.html')
+    user = request.user,
+    body = json.loads(request.body)
+    order = Order.objects.get(user=request.user, is_ordered=False, order_number=body['orderID'])
+    
+    # Store transacion detail inside payment model
+    payment = Payment(
+        payment_id = body['transID'],
+        payment_method = body['payment_method'],
+        amount_paid = order.order_total,
+        status = body['status'],
+    )
+    payment.save()
+
+    order.payment = payment
+    order.is_ordered = True
+    order.save()
+    # Move the cart item into order product table
+    cart_items = CartItem.objects.filter(user=request.user)
+    for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.product_id = item.product_id
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product.price
+        # orderproduct.ordered = True
+      
+        orderproduct.save()
+
+        cart_item = CartItem.objects.get(id=item.id)
+        product_variation = cart_item.variations
+        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+        orderproduct.variations = product_variation
+        orderproduct.save()
+
+    # Reduce the quantity of sold products
+        product_variation = Variation.objects.get(id=item.variations.id)
+        print(product_variation, "form orders page")
+        product_variation.stock -= item.quantity
+        product_variation.save()
+
+    # Clear cart
+    CartItem.objects.filter(user=request.user).delete()
+
+    # Send order recieved email to the customer
+    mail_subject = "Thank you for your order"
+    message = render_to_string('orders/order_recieved_email.html', {
+        'user': request.user,
+        'order':order,
+    })
+    to_email = request.user.email
+    send_email = EmailMessage(mail_subject, message, to=[to_email])
+    send_email.send()
+
+    data = {
+        'order_number': order.order_number,
+        'transID': payment.payment_id,
+    }
+
+    return JsonResponse(data)
 
 
+@never_cache
 def order_complete(request):
-    order_number = request.session.get('order_number')
+    order_number = request.GET.get('order_number')
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
-
+        # if order.payment_method == "paypal":
+        #     transID = request.GET.get('payment_id')
+        #     payment = Payment.objects.get(payment_id=transID)
         subtotal = 0
         for i in ordered_products:
-            subtotal += i.product_price * i.quantity
-
+            subtotal += i.product.price * i.quantity
         context = {
             'order':order,
             'ordered_products':ordered_products,
             'order_number':order.order_number,
-            'subtotal':subtotal
+            'subtotal':subtotal,
+            # 'transID':payment.payment_id,
+            # 'payment':payment
         }
 
         return render(request, 'orders/order_complete.html', context)

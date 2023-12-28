@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{% load socialaccount %}
 
 <!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-content padding-y">
@@ -46,6 +47,14 @@
                             {{form.confirm_password}}
                         </div> <!-- form-group end.// -->  
                     </div>
+
+                    <p class="text-center"> OR </p>
+                    <div class="form-row">
+                      <div class="col form-group">
+                          <a class="form-control text-center" href="{% provider_login_url 'google' %}" > Login with <img src="https://static.typingclub.com/m/pub/images/google-icon.svg" width=18px></a>
+                      </div>
+                    </div>
+
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary btn-block"> Register  </button>
                     </div> <!-- form-group// -->      

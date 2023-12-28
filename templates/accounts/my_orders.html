@@ -43,8 +43,10 @@
                                         <td> <a href="{% url "request_refund" order.order_number %}" class="btn btn-outline-danger">Return Order</a> </td>
                                         {% elif order.status == 'Cancelled' %}
                                         <td> <a href="#" class="btn btn-outline-danger">Order Cancelled</a> </td>
-                                        {% elif order.status == 'hold' %}
-                                        <td> <a href="#" class="btn btn-outline-danger">On hold</a> </td>
+                                        {% elif order.refund_requested == True and order.refund_granted == False %}
+                                        <td> <a href="#" class="btn btn-outline-danger">refund initiated</a> </td>
+                                        {% elif order.refund_granted == True %}
+                                        <td> </td>
                                         {% else %}
                                         <td> <a href="#" data-toggle="modal" data-target="#confirmationModal{{ order.order_number }}" class="btn btn-outline-danger">Cancel Order?</a> 
                                             <div class="modal fade" id="confirmationModal{{ order.order_number }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ order.order_number }}" aria-hidden="true">

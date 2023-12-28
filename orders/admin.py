@@ -3,11 +3,11 @@ from .models import Address, Payment, Order, OrderProduct, Refund
 
 class OrderProductInline(admin.TabularInline):
     model = OrderProduct
-    readonly_fields = ('user', 'product', 'quantity', 'product_price', 'ordered')
+    # readonly_fields = ('user', 'product', 'quantity', 'product_price', 'ordered')
     extra = 0
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['order_number', 'order_total', 'is_ordered', 'created_at']
+    list_display = ['order_number', 'order_total', 'is_ordered', 'created_at', 'status']
     search_fields = ['order_number', 'first_name']
     list_per_page = 20
     inlines = [OrderProductInline]

@@ -28,10 +28,10 @@ class Address(models.Model):
 
 
 class Payment(models.Model):
-    payment_id = models.CharField(max_length=100)
+    payment_id = models.CharField(max_length=100, null=True, blank=True)
     payment_method = models.CharField(max_length=100)
-    amount_paid = models.CharField(max_length=100)
-    status = models.CharField(max_length=250)
+    amount_paid = models.CharField(max_length=100, default=0)
+    status = models.CharField(max_length=250, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -50,7 +50,7 @@ class Order(models.Model):
         ('Return Initiated', 'return_initiated')
     )
 
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, blank=True)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
     payment_method = models.CharField(max_length=100)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
@@ -72,13 +72,13 @@ class Order(models.Model):
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    # payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variations = models.ManyToManyField(Variation, blank=True)
+    variations = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField()
-    product_price = models.FloatField()
-    ordered = models.BooleanField(default=False)
+    # product_price = models.FloatField()
+    # ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
@@ -94,6 +94,4 @@ class Refund(models.Model):
 
     def __str__(self):
         return f'{self.pk}'
-    
-
     

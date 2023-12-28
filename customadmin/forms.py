@@ -14,6 +14,9 @@ class ProductForm(ModelForm):
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
 
+class ProductGalleryForm(ModelForm):
+    pass
+
 class CategoryForm(ModelForm):
     class Meta:
         model = Category

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#29(9%u_htxb(fl7c2%r=)f+2yei9vvj%y547m0!q4qai6@x+$'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -31,12 +32,20 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
     'widget_tweaks',
     'customadmin',
     'category',
@@ -46,6 +55,7 @@ INSTALLED_APPS = [
     'orders',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,7 +64,21 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    }
+}
 
 ROOT_URLCONF = 'greatkart.urls'
 
@@ -76,6 +100,15 @@ TEMPLATES = [
     },
 ]
 
+SITE_ID = 2
+
+LOGIN_REDIRECT_URL = '/'
+
+SOCIALACCOUNT_PROVIDERS = {'google': {
+    'SCOPE': ['profile', 'email', ], 'AUTH_PARAMS': {'access_type': 'online',}
+}}
+
+
 WSGI_APPLICATION = 'greatkart.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.Account'
@@ -90,6 +123,27 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'greatkart',
+#         'USER': 'postgres',
+#         'PASSWORD': 'hellopostakifa',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
+
+AUTHENTICATION_BACKENDS = [
+    
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+    
+]
 
 
 # Password validation
@@ -116,7 +170,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE =  'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -139,24 +193,19 @@ STATICFILES_DIRS = [
 ]
 
 # media files configuration
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR /'media' 
 
 
 # MESSAGES----
-
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS=True
-EMAIL_HOST='smtp.gmail.com'
-# EMAIL_FROM='fathimaakifa35@gmail.com'
-EMAIL_HOST_USER='fathimaakifa35@gmail.com'
-EMAIL_HOST_PASSWORD='obqfltlzbkiihoge'
-EMAIL_PORT=587
+EMAIL_USE_TLS= config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST= config('EMAIL_HOST')
+EMAIL_HOST_USER= config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD= config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT= config('EMAIL_PORT', cast=int)

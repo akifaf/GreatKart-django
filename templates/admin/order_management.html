@@ -1,8 +1,48 @@
 {% extends "admin/base1.html" %}
 {% block content %}
-<div class='ml-4'>
+<div class='ml-4 pt-0'>
     <h3>Order Management</h3>
 </div>
+{% if request_refunds %}
+<div class='m-4'>
+    <h5>Refund requested</h5>
+</div>
+
+<div class="col">
+    <div class="card">
+        <div class="card-body">
+            
+            <table class="table table-head-bg-primary table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">User</th> 
+                        <th scope="col">Order number</th>
+                        <th scope="col">Order total</th>
+                        <th scope="col">Ordered on</th>
+                        <th scope="col">View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in request_refunds %}
+                    <tr> 
+                        <td><a href='{% url 'change_order_status' order.order_number %}'>{{ order.user }}</a></td>
+                        <td>{{ order.order_number}}</td>
+                        <td>{{ order.order_total}}</td>
+                        <td>{{ order.created_at}}</td>
+                        <td > <a href="{% url "view_return_order" order.order_number %}" class="btn btn-outline-primary">View datails</a></td>
+                        
+                    </tr>
+                    {% endfor %}
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class='m-4'>
+    <h5>Order list</h5>
+</div>
+{% endif %}
 <div class="col">
     <div class="card">
         <div class="card-body">
@@ -16,22 +56,22 @@
                         <th scope="col">Ordered on</th>
                         <th scope="col">Status</th>
                         <th scope="col">View</th>
-                        <th scope="col">Cancel Order?</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for order in orders %}
-                    <tr>
+                    <tr> 
                         <td><a href='{% url 'change_order_status' order.order_number %}'>{{ order.user }}</a></td>
                         <td>{{ order.order_number}}</td>
                         <td>{{ order.order_total}}</td>
                         <td>{{ order.created_at}}</td>
                         <td>{{ order.status}}</td>
                         <td > <a href="{% url "view_order_detail" order.order_number %}" class="btn btn-outline-primary">View datails</a></td>
-                        {% if order.status == 'Delivered' %}
-                        <td> <a href="" class="btn btn-outline-success">Delivered</a> </td>
-                        {% elif order.status == 'Cancelled' %}
-                        <td> <a href="#" class="btn btn-outline-danger">Order Cancelled</a> </td>
+                        {% if order.status == 'Delivered' or order.status == 'Cancelled' or order.status == 'refunded' or order.status == 'Return Initiated' %}
+                        <td>  </td>
+                        {% comment %} {% elif order.status == 'Cancelled' %}
+                        <td> <a href="#" class="btn btn-outline-danger">Order Cancelled</a> </td> {% endcomment %}
                         {% else %}
                         <td> <a href="#" data-toggle="modal" data-target="#confirmationModal{{ order.order_number }}" class="btn btn-outline-danger">Cancel Order?</a> 
                             <div class="modal fade" id="confirmationModal{{ order.order_number }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ order.order_number }}" aria-hidden="true">

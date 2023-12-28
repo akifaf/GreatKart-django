@@ -9,13 +9,19 @@
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" type="text/css"/>
 	<link href="{% static "assets/css/ready.css" %}" rel="stylesheet" type="text/css"/>
 	<link href="{% static "assets/css/demo.css" %}" rel="stylesheet" type="text/css"/>
+<!-- Cropper -->
+	{% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script> {% endcomment %}
+<!-- Add this in the head section of your HTML file -->
+
+	
+
 
 
 </head>
-<body>
 
     {% include "admin/admin_nav.html" %}
-	
+
 <div class="main-panel">
     <div class="content">
     {% block content %}
@@ -24,7 +30,6 @@
     {% endblock content %}
 	</div>
 </div>
-
 
 
 </body>

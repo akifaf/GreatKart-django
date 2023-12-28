@@ -229,6 +229,14 @@ def my_orders(request):
     return render(request, 'accounts/my_orders.html', context)
 
 @login_required(login_url='login')
+def my_wallet(request):
+    account = Account.objects.get(email=request.user)
+    context = {
+        'account':account
+    }
+    return render(request, 'accounts/my_wallet.html', context)
+
+@login_required(login_url='login')
 def my_address(request):
     addresses = Address.objects.filter(user=request.user)
     context = {
@@ -311,7 +319,7 @@ def order_detail(request, order_id):
     order = Order.objects.get(order_number=order_id)
     subtotal = 0
     for i in order_detail:
-        subtotal += i.product_price * i.quantity
+        subtotal += i.product.price * i.quantity
     context = {
         'order_detail':order_detail,
         'order':order,

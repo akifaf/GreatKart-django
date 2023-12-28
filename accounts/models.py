@@ -51,13 +51,14 @@ class Account(AbstractBaseUser):
     city = models.CharField(max_length=20, blank=True)
     state = models.CharField(max_length=20, blank=True)
     country = models.CharField(max_length=20, blank=True)
+    wallet= models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     #required
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_superadmin = models.BooleanField(default=False)
     is_blocked = models.BooleanField(default=False)
 
@@ -66,6 +67,9 @@ class Account(AbstractBaseUser):
 
 
     objects = MyAccountManager()
+
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     def __str__(self):
         return self.email

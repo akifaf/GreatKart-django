@@ -1,0 +1,102 @@
+{% extends "admin/base1.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    .not-visible {
+        display: none;
+    }
+    h5 {
+        color: #cc9000;
+    }
+</style>
+
+<div class="container-fluid">
+    {% include "includes/alerts.html" %}
+    <h5>hello</h5>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div id="alert-box"></div>
+                <div id="image-box" class="mb-3">
+                    <form action="" id="image-form">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary mt-3 not-visible" id="confirm-btn">Confirm</button>
+
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('heloo world');
+
+        const alertBox = document.getElementById('alert-box');
+        const imageBox = document.getElementById('image-box');
+        const imageForm = document.getElementById('image-form');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const input = document.getElementById('id_image');
+        const csrf = document.getElementsByName('csrfmiddlewaretoken');
+        const csrf_value = csrf[0].value
+        
+
+        input.addEventListener('change', () => {
+            console.log('changed');
+            confirmBtn.classList.remove('not-visible');
+
+            const imgData = input.files[0];
+            const url = URL.createObjectURL(imgData);
+            imageBox.innerHTML = `<img src="${url}" id="image" width="350px">`;
+
+            const image = document.getElementById('image');
+
+            const cropper = new Cropper(image, {
+                aspectRatio: 9 / 9,
+                crop: function (event) {
+                    console.log(event.detail.x);
+                    console.log(event.detail.y);
+                    console.log(event.detail.width);
+                    console.log(event.detail.height);
+                    console.log(event.detail.rotate);
+                    console.log(event.detail.scaleX);
+                    console.log(event.detail.scaleY);
+                },
+            });
+
+
+            confirmBtn.addEventListener('click', () => {
+                cropper.getCroppedCanvas().toBlob((blob) => {
+                    const fd = new FormData();
+                    fd.append('csrfmiddlewaretoken', csrf_value)
+                    fd.append('file', blob, 'my-image.png')
+
+                    $.ajax({
+                        type: 'POST',  // <-- Add a comma here
+                        url: imageForm.action,
+                        data: fd,
+                        success: function(response){
+                            console.log(response);
+                        },
+                        error: function(error){
+                            console.log(error);
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                });
+            });
+        });
+    });
+</script>
+
+
+{% endblock content %}
