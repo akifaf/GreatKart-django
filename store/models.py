@@ -11,14 +11,14 @@ class Banner(models.Model):
     alt_text = models.CharField(max_length=200)
 
 class Size(models.Model):
-    size = models.CharField(max_length=100)
+    size = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.size
 
 class Color(models.Model):
-    color = models.CharField(max_length=100)
-    color_code = models.CharField(max_length=100)
+    color = models.CharField(max_length=100, unique=True)
+    color_code = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.color
@@ -69,43 +69,6 @@ class Variation(models.Model):
 
     def __str__(self):
         return f'{self.product.product_name}'
-
-
-
-
-
-
-# class VaritationManager(models.Manager):
-#     def colors(self):
-#         return super(VaritationManager, self).filter(variation_category = 'color', is_active=True)    
-    
-#     def sizes(self):
-#         return super(VaritationManager, self).filter(variation_category = 'size', is_active=True)    
-
-# varitation_category_choice = (
-#     ('color', 'color'),
-#     ('size', 'size')
-# )
-
-# class Variation(models.Model):
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True)
-#     variation_category = models.CharField(max_length=100, choices=varitation_category_choice, default='color')
-#     variation_value = models.CharField(max_length=100, null=True)
-#     is_active = models.BooleanField(default=True)
-#     created_date = models.DateTimeField(auto_now_add=True)
-
-#     objects = VaritationManager()
-
-#     def __str__(self):
-#         return f'{self.variation_category} : {self.variation_value} '
-    
-# class ProductVariation(models.Model):
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True)
-#     product_variations = models.ManyToManyField(Variation, blank=True)
-#     stock = models.IntegerField()
-
-#     def __str__(self):
-#         return f'{self.product}'
     
 class ProductGallery(models.Model):
     product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
@@ -117,7 +80,6 @@ class ProductGallery(models.Model):
     class Meta:
         verbose_name = 'productgallery'
         verbose_name_plural = 'product gallery'
-
     
 class ReviewRating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

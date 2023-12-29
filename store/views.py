@@ -40,20 +40,10 @@ def product_detail(request, category_slug, product_slug):
         single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
         colors = Variation.objects.filter(product=single_product).values('color__id','color__color').distinct
         sizes = Variation.objects.filter(product=single_product).values('size__id', 'size__size', 'color__id').distinct
-
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()   
-        # product_variation = ProductVariation.objects.filter(product=single_product)
-        # print(product_variation)
-        # color_variations=[]
-        # size_variations=[]
-        # for product_variant in product_variation:
-        #     color_variation = product_variant.product_variations.filter(variation_category='color')
-        #     size_variation = product_variant.product_variations.filter(variation_category='size')
-        #     color_variations.append(color_variation) 
-        #     size_variations.append(size_variation) 
     except Exception as e:
         raise e
-    
+        
     if request.user.is_authenticated:
         try:
             orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
@@ -70,9 +60,6 @@ def product_detail(request, category_slug, product_slug):
 
 
     context = {
-        # 'product_variation':product_variation,
-        # 'color_variations':color_variations,
-        # 'size_variations':size_variations,
         'single_product':single_product,
         'colors':colors,
         'sizes':sizes,

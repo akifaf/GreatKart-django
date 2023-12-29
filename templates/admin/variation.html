@@ -1,0 +1,46 @@
+{% extends "admin/base1.html" %}
+{% block content %}
+<div class="ml-5">
+    <div class="row ">
+        <div class="col float-left">
+            <h3>Variations</h3>
+        </div>
+        <div class="col float-right m-4">
+            <a href="{% url 'add_variation' %}"><button type='submit' class="btn btn-primary float-right ">Add Variation</button></a>
+        </div>
+    </div>
+</div> 
+<div class="col">
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-head-bg-primary table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Color</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Stock</th>
+                        {% comment %} <th scope="col">Deleted</th> {% endcomment %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for variation in variations %}
+                    <tr>
+                        <td><a href="{% url "edit_variation" variation.id %}">{{ variation.product.product_name}}</a></td>
+                        <td>{{ variation.color.color | capfirst }}</td>
+                        <td>{{ variation.size.size | upper }}</td>
+                        <td>{{ variation.stock }}</td>
+                        {% comment %} {% if category.deleted %}
+                        <td><a href="{% url 'undelete_category' color.pk %}" class="btn btn-primary btn-sm">Add </a></td>
+                        {% else %}
+                        <td><a href="" class="btn btn-danger btn-sm">Delete </a></td>
+                        {% endif %} {% endcomment %}
+                    </tr>
+                    {% endfor %}
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

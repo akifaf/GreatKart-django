@@ -140,10 +140,10 @@
         <div class="scrollbar-inner sidebar-wrapper">
             <div class="user">
                 <div class="photo">
-                    <img src="{% static "assets/img/profile.jpg" %}">
+                    <img src="{% static "assets/img/profile.jpg" %}" alt="User Photo">
                 </div>
                 <div class="info">
-                    <a class="" data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+                    <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                         <span>
                             {{ user.username }}
                             <span class="user-level">Administrator</span>
@@ -151,7 +151,7 @@
                         </span>
                     </a>
                     <div class="clearfix"></div>
-
+    
                     <div class="collapse in" id="collapseExample" aria-expanded="true" styles="">
                         <ul class="nav">
                             <li>
@@ -174,73 +174,80 @@
                 </div>
             </div>
             <ul class="nav">
-                <li class="nav-item {% if '/admin_dashboard' in request.path %}active{% endif %}">
+                <li class="nav-item {% if request.path == '/admin_dashboard/' %}active{% endif %}">
                     <a href="{% url 'admin_dashboard' %}">
                         <i class="la la-dashboard"></i>
                         <p>Dashboard</p>
                         <span class="badge badge-count">5</span>
                     </a>
                 </li>
-                <li class="nav-item {% if '/user_management' in request.path %}active{% endif %} ">
+                <li class="nav-item {% if request.path == '/user_management/' %}active{% endif %} ">
                     <a href="{% url 'user_management' %}">
                         <i class="la la-table"></i>
                         <p>User Management</p>
                         <span class="badge badge-count">14</span>
                     </a>
                 </li>
-                <li class="nav-item {% if '/product' in request.path %}active{% endif %} ">
-                    <a href="{% url 'product' %}">
-                        <i class="la la-keyboard-o"></i>
-                        <p>Product</p>
-                        <span class="badge badge-count">50</span>
+                <li class="nav-item">
+                    <a data-toggle="collapse" href="#collapseCategory" aria-expanded="false">
+                        <i class="la la-th"></i>
+                        <p>Product Management</p>
+                        <span class="badge badge-count">6</span>
                     </a>
+                    <div class="collapse" id="collapseCategory">
+                        <ul class="nav flex-column">
+                            <li class="nav-item {% if request.path == '/product/' %}active{% endif %}">
+                                <a href="{% url 'product' %}">
+                                    <i class="la la-keyboard-o"></i>
+                                    <p>Product</p>
+                                    <span class="badge badge-count">50</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">                               
+                                <a href="{% url 'color' %}" class="nav-link"> <i class="la la-adjust"></i>Color</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'size' %}" class="nav-link"><i class="la la-puzzle-piece"></i>Size</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'variation' %}" class="nav-link"><i class="la la-th-large"></i>Variation</a>
+                            </li>
+                            <!-- Add more options as needed -->
+                        </ul>
+                    </div>
                 </li>
-                <li class="nav-item {% if '/prod_gallery' in request.path %}active{% endif %} ">
+                <li class="nav-item {% if request.path == '/prod_gallery/' %}active{% endif %}">
                     <a href="{% url 'prod_gallery' %}">
                         <i class="la la-keyboard-o"></i>
                         <p>Product Gallery</p>
                         <span class="badge badge-count">50</span>
                     </a>
                 </li>
-                <li class="nav-item {% if '/category' in request.path %}active{% endif %} ">
+                <li class="nav-item {% if request.path == '/category/' %}active{% endif %}">
                     <a href="{% url 'category' %}">
                         <i class="la la-th"></i>
                         <p>Category</p>
                         <span class="badge badge-count">6</span>
                     </a>
                 </li>
-                {% comment %} <li class="nav-item {% if '/admin_dashboard' in request.path %}active{% endif %} ">
-                    <a href="notifications.html">
-                        <i class="la la-bell"></i>
-                        <p>Notifications</p>
-                    </a>
-                </li>
-                <li class="nav-item {% if '/admin_dashboard' in request.path %}active{% endif %} ">
-                    <a href="typography.html">
-                        <i class="la la-font"></i>
-                        <p>Typography</p>
-                        {% comment %} <span class="badge badge-danger">25</span> 
-                    </a>
-                </li> {% endcomment %}
-                <li class="nav-item {% if '/order_management' in request.path %}active{% endif %}">
-                    <a data-toggle="collapse" href="#collapseCategory" aria-expanded="false">
+                <li class="nav-item ">
+                    <a data-toggle="collapse" href="#collapseOrder" aria-expanded="false">
                         <i class="la la-th"></i>
                         <p>Order Management</p>
                         <span class="badge badge-count">6</span>
                     </a>
-                    <div class="collapse" id="collapseCategory">
+                    <div class="collapse" id="collapseOrder">
                         <ul class="nav flex-column">
-                            <li class="nav-item {% if '/order_management' in request.path %}active{% endif %}">
-                                <a href="{% url "order_management" %}" class="nav-link">Orders</a>
+                            <li class="nav-item {% if request.path == '/order_management/' %}active{% endif %}">
+                                <a href="{% url 'order_management' %}" class="nav-link">Orders</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link">Ordered Products</a>
+                                <a href="#" class="nav-link">Ordered Products</a>
                             </li>
                             <!-- Add more options as needed -->
                         </ul>
                     </div>
                 </li>
             </ul>
-            
         </div>
     </div>

@@ -1,0 +1,45 @@
+color add{% extends "admin/base1.html" %}
+{% block content %}
+
+<div class="container-fluid">
+    {% include "includes/alerts.html" %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+
+                <div class="card-header">
+                    <div class="card-title">Add Color</div>
+                    <hr>
+                <div class="card-body">
+                    <form action="" method='POST'>
+                        {% csrf_token %}
+                        <div class="form-group from-show-notify row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="product_name">Color :</label>
+                            </div>
+                            <div class="col-lg-6 col-md-9 col-sm-12">
+                                <input type="text" class="form-control" Required name="color">
+                            </div> 
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
+                                <label for="slug">Color code :</label>
+                            </div>
+                            <div class="col-lg-6 col-md-9 col-sm-12">
+                                <input type="text" class="form-control" Required name="color_code">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-9 col-sm-12">
+                            <button type='submit' class="btn btn-primary">Save</button>
+                        </div>
+                        
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock content %}

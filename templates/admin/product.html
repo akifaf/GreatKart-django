@@ -1,13 +1,18 @@
 {% extends "admin/base1.html" %}
 {% block content %}
-<div class="ml-5 mb-4">
-<div class="row ">
-    <h3>Products</h3>
-</div> 
-<div class="row ">
-    <a href="{% url 'add_product' %}"><button type='submit' class="btn btn-primary float-right ">Add Product</button></a>
+<div class="ml-5">
+    <div class="row">
+        <div class="col text-left">
+            <h3>Products</h3>
+        </div>
+        <div class="col text-right m-4">
+            <a href="{% url 'add_product' %}">
+                <button type='submit' class="btn btn-primary">Add Product</button>
+            </a>
+        </div>
+    </div>
 </div>
-</div>
+
 
 <div class="col">
     <div class="card">

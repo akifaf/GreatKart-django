@@ -31,11 +31,6 @@
                 <figcaption class="info">
                     <a href="{{ cart_item.product.get_url }}" class="title text-dark text-bold">{{ cart_item.product.product_name }}</a>
                     <p class="text-muted small">
-                        {% comment %} {% if cart_item.variations.all %}
-                        {% for item in cart_item.variations.all %}
-                            {{ item.variation_category |capfirst}} : {{ item.variation_value |capfirst}}<br>
-                        {% endfor %}
-                        {% endif %} {% endcomment %}
                         color: {{ cart_item.variations.color }}<br>
                         size: {{ cart_item.variations.size }}
                     </p> 
@@ -120,7 +115,7 @@
                     </div>
                 </div>
 
-                
+                <input type="hidden" name="referrer" value="checkout">
                 <button type="submit" class="btn btn-primary btn-block"> Place Order </button>
                 <a href="{% url "store" %}" class="btn btn-light btn-block">Continue Shopping</a>
                 

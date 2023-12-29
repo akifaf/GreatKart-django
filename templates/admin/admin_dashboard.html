@@ -46,7 +46,7 @@
                                 <div class="col-7 d-flex align-items-center">
                                     <div class="numbers">
                                         <p class="card-category">Revenue</p>
-                                        <h4 class="card-title">$ {{ revenue}}</h4>
+                                        <h4 class="card-title">$ {{ revenue }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                                 <div class="col-7 d-flex align-items-center">
                                     <div class="numbers">
                                         <p class="card-category">Order</p>
-                                        <h4 class="card-title">{{ total_orders}}</h4>
+                                        <h4 class="card-title">{{ total_order }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -331,7 +331,10 @@
         options: {
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
                 }
             }
         }

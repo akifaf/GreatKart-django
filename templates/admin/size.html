@@ -1,0 +1,33 @@
+{% extends "admin/base1.html" %}
+{% block content %}
+<div class="ml-5">
+    <div class="row ">
+        <div class="col float-left">
+            <h3>Sizes</h3>
+        </div>
+        <div class="col float-right m-4">
+            <a href="{% url 'add_size' %}"><button type='submit' class="btn btn-primary float-right ">Add size</button></a>
+        </div>
+    </div>
+</div> 
+<div class="col">
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-head-bg-primary table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for size in sizes %}
+                    <tr>
+                        <td><a href="{% url "add_size" %}">{{ size.size | upper }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

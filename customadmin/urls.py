@@ -13,6 +13,13 @@ urlpatterns = [
     path('unblock_user/<int:pk>/', views.unblock_user, name='unblock_user'),
 
     path('product', views.product, name='product'),
+    path('color', views.color, name='color'),
+    path('size', views.size, name='size'),
+    path('variation', views.variation, name='variation'),
+    path('add_color', views.add_color, name='add_color'),
+    path('add_size', views.add_size, name='add_size'),
+    path('add_variation', views.add_variation, name='add_variation'),
+    path('edit_variation/<int:pk>/', views.edit_variation, name='edit_variation'),
     path('prod_gallery', views.prod_gallery, name='prod_gallery'),
     path('add_prod_gallery', views.add_prod_gallery, name='add_prod_gallery'),
     path('add_product', views.add_product, name='add_product'),

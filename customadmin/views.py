@@ -1,6 +1,7 @@
 from decimal import Decimal
 import json
 import os
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import  render, redirect
 from django.contrib import messages, auth
@@ -13,9 +14,9 @@ from accounts.models import Account
 from orders import models
 from orders.models import Order, OrderProduct, Refund
 from store.forms import ImageForm
-from store.models import Product, ProductGallery
+from store.models import Color, Product, ProductGallery, Size, Variation
 from category.models import Category
-from .forms import CategoryForm, OrderForm, ProductForm
+from .forms import CategoryForm, OrderForm, ProductForm, VariationForm
 from customadmin import forms
 from django.contrib.auth.decorators import user_passes_test
 
@@ -53,6 +54,7 @@ def admin_dashboard(request):
     orders = Order.objects.filter(status='Delivered')
     total_order = orders.count()
     revenue = orders.aggregate(total_revenue=Sum('order_total'))['total_revenue']
+    revenue = round(revenue, 2)
     labels = []
     data = []
     sales = (
@@ -203,6 +205,36 @@ def product(request):
     }
     return render(request,'admin/product.html', context)
 
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def color(request):
+    colors = Color.objects.all().order_by('-id')
+    context = {
+        'colors':colors,
+    }
+    return render(request,'admin/color.html', context)
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def size(request):
+    sizes = Size.objects.all().order_by('-id')
+    context = {
+        'sizes':sizes,
+    }
+    return render(request,'admin/size.html', context)
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def variation(request):
+    variations = Variation.objects.all().order_by('-id')
+    context = {
+        'variations':variations,
+    }
+    return render(request,'admin/variation.html', context)
+
 def prod_gallery(request):
     products = Product.objects.all()
     product_gallery = ProductGallery.objects.all()
@@ -233,7 +265,7 @@ def add_product(request):
     context = {'categories':categories}
     if request.method=='POST':
         product = Product()
-        product.product_name = request.POST['product_name']
+        product_name = request.POST['product_name']
         product.description = request.POST['description']
         product.price = request.POST['price']
         product.stock = request.POST['stock']        
@@ -241,22 +273,120 @@ def add_product(request):
         category = request.POST['category']
         category_id = Category.objects.get(pk=category)
         product.category = category_id
-        # print(category)
-        # print(slug, product.slug)
         
         if len(request.FILES) != 0:
             product.image = request.FILES['image']
+
+        if Product.objects.filter(product_name=product_name):
+            print("Test", Product.objects.filter(slug=slug))
+            messages.error(request, "Product already exists")
+            return redirect('/customadmin/add_product')
 
         if Product.objects.filter(slug=slug):
             print("Test", Product.objects.filter(slug=slug))
             messages.error(request, "Product Slug already exists")
             return redirect('/customadmin/add_product')
         else:
+            product.product_name = product_name
             product.slug = slug
             product.save()
             messages.success(request, "Product added successfully.")
 
     return render(request, 'admin/add_product.html', context)
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def add_color(request):
+    if request.method == 'POST':
+        color_value = request.POST['color']
+        color_code = request.POST['color_code']
+        if Color.objects.filter(Q(color=color_value) | Q(color_code=color_code)).exists():
+            messages.error(request, 'Color or color code already exists')
+            return redirect('add_color')
+        else:
+            color_instance = Color(color=color_value, color_code=color_code)
+            color_instance.save()
+            messages.success(request, 'Color added successfully.')
+            return redirect('color')
+    return render(request, 'admin/add_color.html')
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def add_size(request):
+    if request.method == 'POST':
+        size = request.POST['size']
+        if Size.objects.filter(size__iexact=size):
+            messages.error(request, 'Size already exists')
+            return redirect('add_size')
+        else:
+            size_instance = Size(size=size)
+            size_instance.save()
+            messages.success(request, 'Size added successfully.')
+            return redirect('size')
+    return render(request, 'admin/add_size.html')
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def add_variation(request):
+    products = Product.objects.all()
+    colors = Color.objects.all()
+    sizes = Size.objects.all()
+    context = {
+        'products': products,
+        'colors': colors,
+        'sizes': sizes
+    }
+    if request.method == 'POST':
+        product_id = request.POST['product']
+        color_value = request.POST['color']
+        size_value = request.POST['size']
+        stock = request.POST['stock']
+        print(product_id, color_value, size_value, stock)
+        # Retrieve the product, color, and size instances
+        product = Product.objects.get(id=product_id)
+        color = Color.objects.get(id=color_value)
+        size = Size.objects.get(id=size_value)
+        # Check if the variation already exists
+        if Variation.objects.filter(product=product, color=color, size=size).exists():
+            messages.error(request, "Product Variation already exists")
+            return redirect('add_variation')
+        else:
+            # Create a new Variation instance
+            variation_instance = Variation(product=product, color=color, size=size, stock=stock)
+            variation_instance.save()
+            messages.success(request, "Product variation added successfully.")
+            return redirect('add_variation')    
+    return render(request, 'admin/add_variation.html', context)
+
+def edit_variation(request, pk):
+    variation = Variation.objects.get(pk=pk)
+    print(variation)
+    variation_form = VariationForm(instance=variation)
+    context ={
+        'variation':variation,
+        'variation_form':variation_form
+    }
+    if request.method == "POST":
+        product = request.POST['product']
+        color = request.POST['color']
+        size = request.POST['size']
+        stock = request.POST['stock']
+        product_id = Product.objects.get(pk=product)
+        color_id = Color.objects.get(pk=color)
+        size_id = Size.objects.get(pk=size)
+        variation.product = product_id
+        variation.color = color_id
+        variation.size = size_id
+        variation.stock = stock
+        variation.save()
+        messages.success(request, 'Changes saved successfully')
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+
+    return render(request, 'admin/edit_variation.html', context)
 
 @user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
 @login_required(login_url='/customadmin/admin_login')

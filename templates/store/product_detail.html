@@ -51,19 +51,9 @@
                             <h6>Choose Color</h6>
                             <select name="color" class='form-control' required>
                                 <option value="" disabled selected>select</option>
-                                {% comment %} {% for item in single_product.variation_set.all %}
-                                <option value="{{ item.color.color }}">{{ item.color.color }}</option>
-                                {% endfor %} {% endcomment %}
-
                                 {% for color in colors %}
                                 <option class="choose-color" data-color="{{ color.color__id }}" value="{{ color.color__color | capfirst }}">{{ color.color__color | capfirst }}</option>
                                 {% endfor %}
-
-                                {% comment %} {% for color_query in color_variations %}
-                                {% for color_variation in color_query %}
-                                    <option value="{{  color_variation.variation_value }}">{{ color_variation.variation_value }}</option>
-                                {% endfor %}
-                                {% endfor %} {% endcomment %}
                             </select>
                         </div>
                     </div> <!-- row.// -->
@@ -72,22 +62,9 @@
                             <h6>Select Size</h6>
                             <select name="size" class='form-control' required>
                               <option value="" disabled selected>select</option>
-
-
                               {% for size in sizes %}
                                 <option class="choose-size color{{ size.color__id }}" value="{{ size.size__size | title  }}">{{ size.size__size | title }}</option>
                                 {% endfor %}
-                                {% comment %} 
-                              {% for item in single_product.variation_set.all %}
-                              <option value="{{ item.size.size }}">{{ item.size.size }}</option>
-                              {% endfor %} {% endcomment %}
-
-
-                              {% comment %} {% for size_query in size_variations %}
-                              {% for size_variation in size_query %}
-                                  <option value="{{  size_variation.variation_value }}">{{ size_variation.variation_value }}</option>
-                              {% endfor %}
-                              {% endfor %} {% endcomment %}
                             </select>
                         </div>
                     </div> <!-- row.// -->

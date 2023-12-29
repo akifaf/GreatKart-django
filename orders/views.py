@@ -3,6 +3,7 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
+from django.urls import reverse
 import requests
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
@@ -37,18 +38,15 @@ def shipping_address(request):
             data.save()
             print('after saved')
             messages.success(request, "Address added successfully")
-            url = request.META.get('HTTP_REFERER')
-            try:
-                query = requests.utils.urlparse(url).query
-                # next=/carts/checkout
-                params = dict(x.split('=') for x in query.split('&'))
-                if 'next' in params:
-                    nextPage = params['next']
-                    return redirect(nextPage)
-            except:
-                return redirect('shipping_address')
+            referrer = request.POST.get('referrer', '')
+            if referrer == 'checkout':
+                # If the referrer is the checkout page, redirect back to it
+                checkout_url = reverse('checkout')  # Replace 'checkout' with the actual name of your checkout URL
+                return redirect(checkout_url)
+            else:
+                return redirect('my_address')        
         else:
-            messages.error(request, 'Invalid')
+                messages.error(request, 'Invalid')
             
     else:
         form = AddressForm()
@@ -87,6 +85,7 @@ def place_order(request, total=0, quantity=0):
         payment_method = request.POST['payment_method']
         data.payment_method = payment_method        
         data.save()
+        
         #Generate order number
         yr = int(datetime.date.today().strftime('%Y'))
         dt = int(datetime.date.today().strftime('%d'))

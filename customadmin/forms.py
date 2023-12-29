@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from orders.models import Order
-from store.models import Product
+from store.models import Color, Product, Size, Variation
 from category.models import Category
 
 class ProductForm(ModelForm):
@@ -10,6 +10,39 @@ class ProductForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+class ColorForm(ModelForm):
+    class Meta:
+        model = Color
+        fields = ['color', 'color_code']
+
+    def __init__(self, *args, **kwargs):
+        super(ColorForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+class SizeForm(ModelForm):
+    class Meta:
+        model = Size
+        fields = ['size']
+
+    def __init__(self, *args, **kwargs):
+        super(SizeForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+class VariationForm(ModelForm):
+    class Meta:
+        model = Variation
+        fields = ['product', 'color', 'size', 'stock']
+
+    def __init__(self, *args, **kwargs):
+        super(VariationForm, self).__init__(*args, **kwargs)
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})

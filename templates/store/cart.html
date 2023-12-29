@@ -42,13 +42,8 @@
                 <figcaption class="info">
                     <a href="{{ cart_item.product.get_url }}" class="title text-dark text-bold">{{ cart_item.product.product_name }}</a>
                     <p class="text-muted small">
-                        {% comment %} {% if cart_item.variations.all %} {% endcomment %}
                         color: {{ cart_item.variations.color }}<br>
                         size: {{ cart_item.variations.size }}
-                        {% comment %} {% for item in cart_item.variations.all %}
-                            {{ item.variation_category |capfirst}} : {{ item.variation_value |capfirst}}<br>
-                        {% endfor %} {% endcomment %}
-                        {% comment %} {% endif %} {% endcomment %}
 
                     </p> 
                 </figcaption>
@@ -65,10 +60,8 @@
 
                     <form action="{% url 'add_cart' cart_item.product.id %}" method="POST">
                         {% csrf_token %}
-                        {% comment %} {% for item in cart_item.variations.all %} {% endcomment %}
                         <input type="hidden" name="color" value="{{ cart_item.variations.color | capfirst }}">
                         <input type="hidden" name="size" value="{{ cart_item.variations.size | capfirst }}">
-                        {% comment %} {% endfor %} {% endcomment %}
                         <button class="btn btn-light" type="submit" id="button-minus"> <i class="fa fa-plus"></i> </button>
 
                     </form>

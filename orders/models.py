@@ -26,7 +26,6 @@ class Address(models.Model):
     def __str__(self):
         return self.full_name()
 
-
 class Payment(models.Model):
     payment_id = models.CharField(max_length=100, null=True, blank=True)
     payment_method = models.CharField(max_length=100)
@@ -36,7 +35,6 @@ class Payment(models.Model):
 
     def __str__(self):
         return self.payment_id
-
     
 class Order(models.Model):
     STATUS = (
@@ -58,7 +56,7 @@ class Order(models.Model):
     order_note = models.CharField(max_length=100, blank=True)
     order_total = models.FloatField()
     tax = models.FloatField()
-    status = models.CharField(max_length=100, choices=STATUS, default='New')
+    status = models.CharField(max_length=100, choices=STATUS, default='Ordered')
     ip = models.CharField(blank=True, max_length=20)
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -67,24 +65,19 @@ class Order(models.Model):
     refund_granted = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.first_name
-    
+        return self.user.first_name    
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    # payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
     user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variations = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField()
-    # product_price = models.FloatField()
-    # ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.product.product_name
-    
+        return self.product.product_name    
 
 class Refund(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

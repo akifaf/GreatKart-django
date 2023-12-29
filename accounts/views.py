@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
+from decimal import Decimal
 
 from carts.views import _cart_id
 from carts.models import Cart, CartItem
@@ -332,15 +333,18 @@ def order_detail(request, order_id):
 def cancel_order(request, order_id):
     print('I was called')
     order = Order.objects.get(order_number=order_id)
+    user = order.user
     if order.status:
         print('I was here')
         order.status = 'Cancelled'
+        print(order.payment_method)
+        if order.payment_method != 'COD':
+            wallet = Decimal(str(order.order_total)) 
+            user.wallet += wallet
+            user.save()
         order.save()
         messages.success(request, "Order Cancelled Successfully.")
     return redirect('my_orders')
-    
-
-
 
 def request_refund(request, order_id):
     form = RefundForm()
