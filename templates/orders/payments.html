@@ -91,6 +91,12 @@
                   <dt>Tax:</dt>
                   <dd class="text-right"> ${{ tax }}</dd>
                 </dl>
+                {% if cart.coupon %}
+                <dl class="dlist-align">
+                  <dt>Coupon discount:</dt>
+                  <dd class="text-right text-danger"> - ${{ cart.coupon.discount }}</dd>
+                </dl>
+                {% endif %}
                 <dl class="dlist-align">
                   <dt>Total:</dt>
                   <dd class="text-right text-dark b"><strong>${{ grand_total }}</strong></dd>

@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import Account
 from category.models import Category
 from django.urls import reverse
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Sum
 
 # Create your models here.   
 
@@ -39,11 +39,6 @@ class Product(models.Model):
     def get_url(self):
         return reverse('product_detail', args=[self.category.slug, self.slug])
 
-    def total_stock(self):
-        variations = self.productvariation_set.all()
-        total_stock = sum(variation.stock for variation in variations)
-        return total_stock
-
     def __str__(self):
         return self.product_name    
     
@@ -60,6 +55,11 @@ class Product(models.Model):
         if reviews['count'] is not None:
             count = int(reviews['count'])
         return count
+    
+    def total_stock(self):
+        variations = Variation.objects.filter(product=self)
+        total_stock = variations.aggregate(Sum('stock'))['stock__sum']
+        return total_stock if total_stock is not None else 0
 
 class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
@@ -95,3 +95,11 @@ class ReviewRating(models.Model):
     def __str__(self):
         return self.subject
 
+class Coupon(models.Model):
+    coupon_code = models.CharField(max_length=20)
+    is_expired = models.BooleanField(default=False)
+    discount = models.IntegerField(default=100)
+    minimum_amount = models.IntegerField(default=500)
+
+    def __str__(self):
+        return self.coupon_code

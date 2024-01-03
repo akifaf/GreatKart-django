@@ -62,11 +62,15 @@
                 <tbody>
                     {% for order in orders %}
                     <tr> 
+                        {% if order.status == 'Cancelled' or order.status == 'refunded' %}
+                        <td><a href=''>{{ order.user }}</a></td>
+                        {% else %}
                         <td><a href='{% url 'change_order_status' order.order_number %}'>{{ order.user }}</a></td>
+                        {% endif %}
                         <td>{{ order.order_number}}</td>
                         <td>{{ order.order_total}}</td>
                         <td>{{ order.created_at}}</td>
-                        <td>{{ order.status}}</td>
+                        <td>{{ order.status | capfirst }}</td>
                         <td > <a href="{% url "view_order_detail" order.order_number %}" class="btn btn-outline-primary">View datails</a></td>
                         {% if order.status == 'Delivered' or order.status == 'Cancelled' or order.status == 'refunded' or order.status == 'Return Initiated' %}
                         <td>  </td>

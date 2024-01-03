@@ -7,7 +7,7 @@ from django.contrib import messages, auth
 from decimal import Decimal
 
 from carts.views import _cart_id
-from carts.models import Cart, CartItem
+from carts.models import Cart, CartItem, Wishlist
 from orders.forms import AddressForm, RefundForm
 from orders.models import Address, Order, OrderProduct, Refund
 from .models import Account
@@ -57,7 +57,7 @@ def login(request):
         user = auth.authenticate(email=email, password=password)
         if_user = Account.objects.get(email=email)
         
-        if user is not None:
+        if user is not None and user.is_verified:
             try:
                 cart = Cart.objects.get(cart_id=_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
@@ -133,7 +133,7 @@ def  otp_verification(request):
         user = Account.objects.get(email=request.session['email'])
         otp_=request.POST.get("otp")
         if otp_ == request.session["otp"]:
-            user.is_active=True
+            user.is_verified=True
             user.save()
             del request.session['email']
             del request.session['otp']
@@ -291,6 +291,21 @@ def edit_profile(request):
         'user':user
     }
     return render(request, 'accounts/edit_profile.html', context)
+
+@login_required(login_url='login')
+def wishlist(request):
+    try:
+        wishlist = Wishlist.objects.filter(user=request.user)
+        print(wishlist)
+    except:
+        print('ahdfo')
+        pass
+    context = {
+        'wishlist':wishlist
+    }
+    return render(request, 'accounts/my_wishlist.html', context)
+
+
 
 @login_required(login_url='login')
 def change_password(request):

@@ -10,4 +10,4 @@ class ReviewForm(forms.ModelForm):
 class ImageForm(forms.ModelForm):
     class Meta:
         model = ProductGallery
-        fields = ['product', 'image']
+        fields = ['image']

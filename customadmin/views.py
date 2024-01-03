@@ -3,7 +3,7 @@ import json
 import os
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import  render, redirect
+from django.shortcuts import  get_object_or_404, render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
@@ -14,11 +14,16 @@ from accounts.models import Account
 from orders import models
 from orders.models import Order, OrderProduct, Refund
 from store.forms import ImageForm
-from store.models import Color, Product, ProductGallery, Size, Variation
+from store.models import Color, Coupon, Product, ProductGallery, Size, Variation
 from category.models import Category
 from .forms import CategoryForm, OrderForm, ProductForm, VariationForm
 from customadmin import forms
 from django.contrib.auth.decorators import user_passes_test
+
+from django.http import HttpResponse
+from openpyxl import Workbook
+from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
+from openpyxl.utils import get_column_letter
 
 def user_is_admin(user):
     return  user.is_staff  
@@ -49,10 +54,19 @@ def admin_login(request):
 @login_required(login_url='/customadmin/admin_login')
 @never_cache
 def admin_dashboard(request):
+    products = Product.objects.all()
+    total_stock  = 0
+    for product in products:
+        stock = product.total_stock()
+        total_stock += stock
     users = Account.objects.filter(is_superadmin=False)
     total_user =users.count()
+    pending_delivery = Order.objects.filter(Q(status='Ordered') | Q(status='shipped') | Q(status='Processing')).count()
+    request_refunds = Order.objects.filter(refund_requested=True, refund_granted=False)
+    request_refunds_count = request_refunds.count()
     orders = Order.objects.filter(status='Delivered')
     total_order = orders.count()
+    orders = Order.objects.filter(Q(status='Ordered') | Q(status='shipped') | Q(status='Processing')).order_by('-created_at')[:4]
     revenue = orders.aggregate(total_revenue=Sum('order_total'))['total_revenue']
     revenue = round(revenue, 2)
     labels = []
@@ -60,17 +74,23 @@ def admin_dashboard(request):
     sales = (
         Order.objects.filter(status='Delivered')
         .annotate(day=ExtractDay('created_at'))
-        .values('day')
+        .annotate(month=ExtractMonth('created_at'))
+        .values('day', 'month')
         .annotate(total_orders=Count('order_total'))
         .annotate(total_sales=Sum('order_total'))
         .order_by('day')
     )
     for i in sales:
-        labels.append(f'Day {i["day"]}')
+        labels.append(f'{i["month"]} {i["day"]}')
         data.append(i["total_orders"])
     print(labels, data)
     context = {
+        'request_refunds':request_refunds,
+        'request_refunds_count':request_refunds_count,
+        'pending_delivery':pending_delivery,
+        'total_stock':total_stock,
         'total_user':total_user,
+        'orders':orders,
         'users':users,
         'total_order':total_order,
         'revenue':revenue,
@@ -81,18 +101,57 @@ def admin_dashboard(request):
 
 @user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
 @login_required(login_url='/customadmin/admin_login')
-@never_cache
 def sales_report(request):
     if request.method == 'POST':
         from_date = request.POST.get('fromDate')
         to_date = request.POST.get('toDate')
         type = request.POST.get('type')
-        orders = Order.objects.filter(status='Delivered', created_at__gte=from_date, created_at__lte=to_date)
+        order_products= OrderProduct.objects.filter(order__status='Delivered', order__created_at__gte=from_date, order__created_at__lte=to_date).order_by('-created_at')
+        order = Order.objects.filter(status="Delivered", created_at__gte=from_date, created_at__lte=to_date)
+        total_orders = order.count()
+        total_revenue = order.aggregate(total_revenue=Sum('order_total'))['total_revenue']
+
+        if  request.POST.get('download'):
+            print("mai yaha hoon")
+            response = HttpResponse(content_type='application/ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="sales_report.xlsx"'
+
+            wb = Workbook()
+            ws = wb.active
+            ws.title = "Report"
+
+            # Add headers
+            headers = ["User", "Product", "Price", "Quantity", "Payment method", "Date"]
+            ws.append(headers)
+
+            # Add data from the model
+            for order_product in order_products:
+                ws.append([
+                    order_product.order.user.email,
+                    order_product.product.product_name,
+                    order_product.product.price,
+                    order_product.quantity,
+                    order_product.order.payment_method,
+                    order_product.created_at.strftime("%D/%M/%Y") if order_product.created_at else ""
+                ])
+
+            dim_holder = DimensionHolder(worksheet=ws)
+
+            for col in range(ws.min_column, ws.max_column + 1):
+                dim_holder[get_column_letter(col)] = ColumnDimension(ws, min=col, max=col, width=20)
+
+            ws.column_dimensions = dim_holder
+
+            # Save the workbook to the HttpResponse
+            wb.save(response)
+            return response
+        else:
+            print("mainn")
         labels = []
         data = []
         if type == 'weekly':
             sales = (
-            Order.objects.filter(created_at__gte=from_date, created_at__lte=to_date)
+            Order.objects.filter(status="Delivered", created_at__gte=from_date, created_at__lte=to_date)
             .annotate(week_number=ExtractWeek('created_at'))
             .values('week_number')
             .annotate(total_orders=Count('order_total'))
@@ -105,7 +164,7 @@ def sales_report(request):
             print(labels, data)
         elif type == 'monthly':
             sales = (
-            Order.objects.filter(created_at__gte=from_date, created_at__lte=to_date)
+            Order.objects.filter(status="Delivered", created_at__gte=from_date, created_at__lte=to_date)
             .annotate(month_number=ExtractMonth('created_at'))
             .values('month_number')
             .annotate(total_orders=Count('order_total'))
@@ -118,7 +177,7 @@ def sales_report(request):
             print(labels, data)
         else:
             sales = (
-            Order.objects.filter(created_at__gte=from_date, created_at__lte=to_date)
+            Order.objects.filter(status="Delivered", created_at__gte=from_date, created_at__lte=to_date)
             .annotate(year=ExtractYear('created_at'))
             .values('year')
             .annotate(total_orders=Count('order_total'))
@@ -129,9 +188,12 @@ def sales_report(request):
                 labels.append(f'Year {i["year"]}')
                 data.append(i["total_orders"])
             print(labels, data)
-        # print(sales)
         context = {
-            'orders':orders,
+            'total_orders':total_orders,
+            'total_revenue':total_revenue,
+            'from_date':from_date,
+            'to_date':to_date,
+            'order_products':order_products,
             'sales':sales,
             'type':type,
             'labels_json': json.dumps(labels),
@@ -236,8 +298,9 @@ def variation(request):
     return render(request,'admin/variation.html', context)
 
 def prod_gallery(request):
-    products = Product.objects.all()
-    product_gallery = ProductGallery.objects.all()
+    products = Product.objects.all().order_by('-id')
+    product_gallery = ProductGallery.objects.all().order_by('-product')
+    
     print(product_gallery)
     context = {
         'products':products,
@@ -245,17 +308,74 @@ def prod_gallery(request):
     }
     return render(request, 'admin/product_gallery.html', context)
 
-def add_prod_gallery(request):
-    form = ImageForm(request.POST or None, request.FILES or None)
-    if form.is_valid():
-        form.save()
-        return JsonResponse({'message':'works'})
+
+# def image_add(request, pk):
+    
+#     if request.method == 'POST':
+#         form = ImageForm(request.POST, request.FILES)
+#         var = Product.objects.get(id=pk)
+        
+
+#         if form.is_valid():
+#             print("Image prior saved successfully!")
+#             form.save()  
+
+#             print("Image saved successfully!")
+            
+            
+#             return JsonResponse({'message': 'works','img_id':pk})
+            
+#         else:
+#             print("Form is not valid:", form.errors)
+            
+#     else:
+#         form = ImageForm()
+    
+#     context = {'form': form,'img_id':pk}
+#     return render(request, 'admin/image_add.html', context)
+
+
+
+
+# def add_prod_gallery(request):
+#     form = ImageForm(request.POST or None, request.FILES or None)
+#     if form.is_valid():
+#         form.save()
+#         return JsonResponse({'message':'works'})
+#     else:
+#         print(form.errors)
+#         print('not value')
+#     context = {
+#         'form':form
+#     }
+#     return render(request, 'admin/add_prod_gallery.html', context)
+
+
+
+def add_product_gallery(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    print(product)
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            image_instance = form.save(commit=False)
+            image_instance.product = product
+            image_instance.save()
+            return JsonResponse({'message': 'works', 'img_id': pk})
+        else:
+            print(form.errors)
+            return JsonResponse({'message': 'error', 'errors': form.errors}, status=400)
     else:
-        print('not value')
-    context = {
-        'form':form
-    }
-    return render(request, 'admin/add_prod_gallery.html', context)
+        form = ImageForm()
+
+    return render(request, 'admin/add_product_gallery.html', {'form': form, 'product': product})
+
+def delete_image(request, pk):
+    image = ProductGallery.objects.get(pk=pk)
+    print(image, 'image')
+    image.delete()
+    messages.success(request, "Image deleted")
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 @user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
 @login_required(login_url='/customadmin/admin_login')
@@ -630,7 +750,66 @@ def admin_grant_return_request(request, order_id):
         user.save()
         order.save()
     return redirect('order_management')
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def coupon(request):
+    coupons = Coupon.objects.all()
+    context = {
+        'coupons':coupons,
+    }
+    return render(request,'admin/coupon.html', context)
+
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def add_coupon(request):
+    if request.method == "POST":
+        coupon = Coupon()
+        coupon_code = request.POST['coupon_code']
+        if Coupon.objects.filter(coupon_code=coupon_code):
+            messages.error(request, "Coupon already exists")
+            return redirect('add_coupon')
+        else:
+            coupon.coupon_code = coupon_code
+            coupon.minimum_amount = request.POST['minimum_amount']
+            coupon.discount = request.POST['discount']        
+            coupon.save()
+            messages.success(request, 'Coupon added successfully')
+            return redirect('add_product')
+    else:
+        return render(request, 'admin/add_coupon.html')
     
+@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+@login_required(login_url='/customadmin/admin_login')
+@never_cache
+def edit_coupon(request, pk):
+    coupon = get_object_or_404(Coupon, pk=pk)
+    if request.method == 'POST':
+        coupon.coupon_code = request.POST.get('coupon_code')
+        coupon.discount = request.POST.get('discount')
+        coupon.minimum_amount = request.POST.get('minimum_amount', 0)
+        coupon.save()
+        messages.success(request, 'Coupon updated successfully!')
+        return redirect('coupon')
+    return render(request, 'admin/edit_coupon.html', {'coupon': coupon})
+
+def undelete_coupon(request, pk):
+    coupon = get_object_or_404(Coupon, pk=pk)
+    coupon.is_expired = False
+    coupon.save()
+    return redirect('coupon')
+
+def delete_coupon(request, pk):
+    coupon = get_object_or_404(Coupon, pk=pk)
+    coupon.is_expired = True
+    coupon.save()
+    return redirect('coupon')
+
+
+    
+
 
 
 

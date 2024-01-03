@@ -1,6 +1,7 @@
 from django.forms import ModelForm
+from django import forms
 from orders.models import Order
-from store.models import Color, Product, Size, Variation
+from store.models import Color, Coupon, Product, Size, Variation
 from category.models import Category
 
 class ProductForm(ModelForm):
@@ -61,17 +62,6 @@ class CategoryForm(ModelForm):
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
 
-# class OrderForm(ModelForm):
-#     class Meta:
-#         model = Order
-#         fields = ['status']
-
-#     def __init__(self, *args, **kwargs):
-#         super(OrderForm, self).__init__(*args, **kwargs)
-#         for field_name, field in self.fields.items():
-#             field.widget.attrs.update({'class': 'form-control'})
-
-
 class OrderForm(ModelForm):
     class Meta:
         model = Order
@@ -82,8 +72,24 @@ class OrderForm(ModelForm):
         readonly_fields = ['user', 'payment_method', 'address', 'order_number','order_total']
 
         for field_name, field in self.fields.items():
-            field.widget.attrs.update({'class': 'form-control col-4'})
-            if field_name in readonly_fields:
-                field.widget.attrs['class'] = 'form-control'
-                field.widget.attrs['readonly'] = True
+            field.widget.attrs.update({'class': 'form-control col-8'})
+            # if field_name in readonly_fields:
+            #     field.widget.attrs['class'] = 'form-control'
+            #     field.widget.attrs['readonly'] = True
                 # field.widget.attrs['class'] = 'form-control col-4'
+
+
+# class CouponForm(ModelForm):
+#     class Meta:
+#         model = Coupon
+#         fields = ['coupon_code', 'is_expired', 'discount', 'minimum_amount']
+
+#     def __init__(self, *args, **kwargs):
+#         super(CouponForm, self).__init__(*args, **kwargs)
+
+#         for name, field in self.fields.items():
+#             field.widget.attrs.update({'class': 'form-control'})
+
+#         # Ensure 'is_expired' is rendered as a checkbox
+#         self.fields['is_expired'].widget = forms.CheckboxInput()
+

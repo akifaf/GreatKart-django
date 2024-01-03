@@ -32,7 +32,7 @@
                     <tr>
                         <td><a href='{% url 'edit_product' product.id %}'>{{ product.product_name}}</a></td>
                         <td>{{ product.price}}</td>
-                        <td>{{ product.stock}}</td>
+                        <td>{{ product.total_stock }}</td>
                         <td>{{ product.category}}</td>
                         {% if product.deleted %}
                         <td><a href="{% url 'undelete_product' product.pk %}" class="btn btn-primary btn-sm">Add </a></td>

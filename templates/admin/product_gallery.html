@@ -15,19 +15,50 @@
                 <thead>
                     <tr>
                         <th scope="col">Product name</th>
+                        <th scope="col">Image</th>
                         <th scope="col">deleted</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for product in products %}
+                    {% for image in product_gallery %}
                     <tr>
-                        <td><a href='{% url "add_prod_gallery" %}'>{{ product.product_name }}</a></td>
-                        <td><a href=''>{{ product.product }}</a></td>
-                        {% comment %} {% if category.deleted %}
-                        <td><a href="{% url 'undelete_category' category.pk %}" class="btn btn-primary btn-sm">Add </a></td>
-                        {% else %}
-                        <td><a href="{% url 'delete_category' category.pk %}" class="btn btn-danger btn-sm">Delete </a></td>
-                        {% endif %} {% endcomment %}
+                        <td><a href="{% url "edit_product" image.product.id %}">{{ image.product.product_name }}</a></td>
+                        <td>
+                            <img src="{{ image.image.url }}" alt="{{ image.product.product_name }}" width="100px" height="100px"> 
+                        </td>
+                        {% comment %} <td><a href="{% url 'delete_image' image.pk %}" class="btn btn-outline-danger btn-sm">Delete </a></td> {% endcomment %}
+                    
+                        <td > 
+                            <a href="#" data-toggle="modal" data-target="#confirmationModal{{ image.pk }}" class="btn btn-outline-danger btn-sm ">Delete</a>
+                        </td> 
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="confirmationModal{{ image.pk }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ image.pk }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmationModalLabel{{ image.pk }}">Confirm delete</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this image?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <a href="{% url 'delete_image' image.pk %}" class="btn btn-danger">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        <script>
+                            $(document).ready(function(){
+                                $('#confirmationModal{{ image.pk }}').modal('show');
+                            });
+                         </script>
+                         
+
                     </tr>
                     {% endfor %}
                 </tbody>

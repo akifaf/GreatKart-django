@@ -9,7 +9,7 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.views.decorators.cache import never_cache
 
-from carts.models import CartItem
+from carts.models import Cart, CartItem
 from orders.forms import AddressForm, RefundForm
 from orders.models import Address, Order, OrderProduct, Payment, Refund
 from store.models import Product, Variation
@@ -36,14 +36,15 @@ def shipping_address(request):
             data.city = form.cleaned_data['city']
             data.pincode = form.cleaned_data['pincode']
             data.save()
-            print('after saved')
             messages.success(request, "Address added successfully")
-            referrer = request.POST.get('referrer', '')
+            referrer = request.session.pop('referrer', '')
+            print(referrer)
             if referrer == 'checkout':
-                # If the referrer is the checkout page, redirect back to it
-                checkout_url = reverse('checkout')  # Replace 'checkout' with the actual name of your checkout URL
+                print('tehere')
+                checkout_url = reverse('checkout')
                 return redirect(checkout_url)
             else:
+                print('here')
                 return redirect('my_address')        
         else:
                 messages.error(request, 'Invalid')
@@ -58,20 +59,21 @@ def shipping_address(request):
 @never_cache
 def place_order(request, total=0, quantity=0):
     current_user = request.user
-
+    cart = Cart.objects.get(user=current_user)
     # If the cart is empty redirect back to store
     cart_items = CartItem.objects.filter(user=current_user)
     cart_count = cart_items.count()
     if cart_count <= 0:
         return redirect('store')
     
-    tax=0
-    grand_total=0
-    for cart_item in cart_items:
-        total += (cart_item.product.price * cart_item.quantity)
-        quantity += cart_item.quantity
-    tax = (2 * total)/100
-    grand_total = tax + total
+    grand_total, total, quantity, tax = cart.calculate_grand_total()    
+    # tax=0
+    # grand_total=0
+    # for cart_item in cart_items:
+    #     total += (cart_item.product.price * cart_item.quantity)
+    #     quantity += cart_item.quantity
+    # tax = (2 * total)/100
+    # grand_total = tax + total
     if request.method == "POST":
         data = Order()
         data.user = current_user
@@ -98,6 +100,7 @@ def place_order(request, total=0, quantity=0):
 
         order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
         context = {
+            'cart':cart,
             'order':order,
             'cart_items':cart_items,
             'total':total,

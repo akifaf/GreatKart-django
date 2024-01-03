@@ -43,11 +43,8 @@
             <td> 
                 <p class="title mb-0">{{ item.product.product_name }} </p>
                 <var class="price text-muted">
-                    {% if item.variations.all %}
-                    {% for i in item.variations.all %}
-                    {{ i.variation_category | capfirst}} : {{ i.variation_value | capfirst}}<br>
-                    {% endfor %}
-                    {% endif %}
+                    color: {{ item.variations.color | capfirst }}<br>
+                    size: {{ item.variations.size | upper }}
                 </var>
             </td>
             <td> quantity <br>{{ item.quantity }} </td>

@@ -230,6 +230,13 @@
                         <span class="badge badge-count">6</span>
                     </a>
                 </li>
+                <li class="nav-item {% if request.path == '/coupon/' %}active{% endif %} ">
+                    <a href="{% url 'coupon' %}">
+                        <i class="la la-table"></i>
+                        <p>Coupon </p>
+                        <span class="badge badge-count">14</span>
+                    </a>
+                </li>
                 <li class="nav-item ">
                     <a data-toggle="collapse" href="#collapseOrder" aria-expanded="false">
                         <i class="la la-th"></i>

@@ -21,11 +21,12 @@ urlpatterns = [
     path('add_variation', views.add_variation, name='add_variation'),
     path('edit_variation/<int:pk>/', views.edit_variation, name='edit_variation'),
     path('prod_gallery', views.prod_gallery, name='prod_gallery'),
-    path('add_prod_gallery', views.add_prod_gallery, name='add_prod_gallery'),
     path('add_product', views.add_product, name='add_product'),
     path('edit_product/<int:pk>/', views.edit_product, name='edit_product'),
     path('delete_product/<int:pk>/', views.delete_product, name='delete_product'),
     path('undelete_product/<int:pk>/', views.undelete_product, name='undelete_product'),
+    path('add_product_gallery/<int:pk>/', views.add_product_gallery, name='add_product_gallery'),
+    path('delete_image/<int:pk>/', views.delete_image, name='delete_image'),
 
     path('category', views.category, name='category'),
     path('add_category', views.add_category, name='add_category'),
@@ -40,4 +41,9 @@ urlpatterns = [
     path('view_return_order/<int:order_id>/', views.view_return_order, name='view_return_order'),
     path('admin_grant_return_request/<int:order_id>/', views.admin_grant_return_request, name='admin_grant_return_request'),
 
+    path('coupon', views.coupon, name='coupon'),
+    path('add_coupon', views.add_coupon, name='add_coupon'),
+    path('edit_coupon/<int:pk>/', views.edit_coupon, name='edit_coupon'),
+    path('delete_coupon/<int:pk>/', views.delete_coupon, name='delete_coupon'),
+    path('undelete_coupon/<int:pk>/', views.undelete_coupon, name='undelete_coupon'),
 ]

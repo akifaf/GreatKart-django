@@ -74,7 +74,7 @@
                         <h5>Select Shipping Address</h5>
                     </div>
                     <div class="col-6 text-right">
-                        <a href="{% url "shipping_address" %}" class="btn btn-outline-primary btn-sm">Add different address +</a>
+                        <a href="{% url 'shipping_address' %}?referrer=checkout" class="btn btn-outline-primary btn-sm">Add different address +</a>
                     </div>
                 </div>
                 {% for ad in address %}

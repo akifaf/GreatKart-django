@@ -42,8 +42,8 @@
                 <figcaption class="info">
                     <a href="{{ cart_item.product.get_url }}" class="title text-dark text-bold">{{ cart_item.product.product_name }}</a>
                     <p class="text-muted small">
-                        color: {{ cart_item.variations.color }}<br>
-                        size: {{ cart_item.variations.size }}
+                        color: {{ cart_item.variations.color | capfirst }}<br>
+                        size: {{ cart_item.variations.size | upper }}
 
                     </p> 
                 </figcaption>
@@ -111,6 +111,26 @@
         <aside class="col-lg-3">
             <div class="card">
             <div class="card-body">
+                <form action="" method="POST">
+                    {% include "includes/alerts.html" %}
+                    {% csrf_token %}
+                    <div class="form-group mb-0">
+                        <label for="">Have Coupon?</label>
+                        <div class="input-group">
+                            <input type="text" name="coupon" id="" placeholder="Coupon code" class="form-control">
+                            <span class="input-group-append">
+                                <button type="submit" class="btn btn-primary">Apply</button>
+                            </span>
+                        </div>
+                        {% if cart.coupon %}
+                        <a href="{% url "remove_coupon" cart.id %}" class="btn btn-outline-success mt-3">{{ cart.coupon.coupon_code }}</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div> <!-- card-body.// -->
+            </div> <!-- card.// -->
+            <div class="card">
+            <div class="card-body">
                 <dl class="dlist-align">
                   <dt>Total price:</dt>
                   <dd class="text-right">${{ total }}</dd>
@@ -119,6 +139,12 @@
                   <dt>Tax:</dt>
                   <dd class="text-right"> ${{ tax }}</dd>
                 </dl>
+                {% if cart.coupon %}
+                <dl class="dlist-align">
+                  <dt>Coupon discount:</dt>
+                  <dd class="text-right text-danger"> - ${{ cart.coupon.discount }}</dd>
+                </dl>
+                {% endif %}
                 <dl class="dlist-align">
                   <dt>Total:</dt>
                   <dd class="text-right text-dark b"><strong>${{ grand_total }}</strong></dd>

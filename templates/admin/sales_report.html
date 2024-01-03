@@ -78,12 +78,13 @@
       </div> {% endcomment %}
       <br>
       <div class="row">
+       
         
          <div class="label ml-3">Sale Report</div>
       <div class="report-bar " style="width:98%;">
           <form method="post" action="{% url "sales_report" %}">
             {% csrf_token %}
-            <div class="report-bar">
+            <div class="report-bar float-left">
                 <div class="date-selectors">
                     <div class="date-selector">
                         <label for="fromDate">From:</label>
@@ -100,11 +101,16 @@
                             <option value="weekly">weekly</option>
                     </select>
                 </div>
-                <button type="submit" class="download-button">Apply</button>
+                <button type="submit" class="btn btn-primary mx-2">Generate</button>
+                <div class="float-right mx-2">
+                    <button type="submit" class="btn btn-success" name="download" value="download">Download</button>
+                </div>
             </div>
+            
+           
         </form>
         
-      </div>
+     
       </div>
       
       
@@ -161,6 +167,59 @@
   });
 </script> {% endcomment %}
 
+<div class="col-md-12">
+    <article class="card  table-head-bg-primary">
+    <header class="card-header">
+        <p class="d-inline-block mr-3 mb-0">From: {{ from_date }}</p>
+        <p class="d-inline-block mr-3 mb-0">To: {{ to_date }}</p>
+  </header>
+    <div class="card-body">
+        <div class="row"> 
+            <div class="col-md-8">
+                <h6 class="text-muted">Total Orders</h6>
+                <p>{{ total_orders }}</p>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-muted">Total Revenue</h6>
+                <p>{{ total_revenue }}</p>
+            </div>
+        </div>
+    </div> 
+    <div class="card">
+        <div class="card-body p-0">
+            <table class="table mt-3">
+                {% comment %} <thead class="bg-success"> {% endcomment %}
+                    <tr>
+                        <th scope="col">user</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Payment method</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                {% comment %} </thead> {% endcomment %}
+                <tbody>
+                    {% for i in order_products %}
+                    <tr>
+                        <td>{{ i.user }}</td>
+                        <td>{{ i.product }}<br>
+                            <var class="price text-muted">
+                                color: {{ i.variations.color | capfirst }}<br>
+                                size: {{ i.variations.size | upper }}
+                            </var>
+                        </td>
+                        <td>{{ i.product.price }}</td>
+                        <td>{{ i.quantity }}</td>
+                        <td>{{ i.order.payment_method }}</td>
+                        <td>{{ i.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </article> <!-- order-group.// --> 
+</div>
 <div class="col">
     <div class="card">
         <div class="card-body">

@@ -15,18 +15,18 @@
             </div>
             
             <div class="row">
-                <div class="col-md-4">
-                    <div class="card card-stats card-warning">
+                <div class="col-md-3">
+                    <div class="card card-stats">
                         <div class="card-body ">
                             <div class="row">
                                 <div class="col-5">
-                                    <div class="icon-big text-center">
-                                        <i class="la la-users"></i>
+                                    <div class="icon-big text-center icon-warning">
+                                        <i class="la la-users text-danger"></i>
                                     </div>
                                 </div>
                                 <div class="col-7 d-flex align-items-center">
                                     <div class="numbers">
-                                        <p class="card-category">Users</p>
+                                        <p class="card-category">Customers</p>
                                         <h4 class="card-title">{{ total_user }}</h4>
                                     </div>
                                 </div>
@@ -34,60 +34,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card card-stats card-success">
-                        <div class="card-body ">
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="icon-big text-center">
-                                        <i class="la la-bar-chart"></i>
-                                    </div>
-                                </div>
-                                <div class="col-7 d-flex align-items-center">
-                                    <div class="numbers">
-                                        <p class="card-category">Revenue</p>
-                                        <h4 class="card-title">$ {{ revenue }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card card-stats card-danger">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="icon-big text-center">
-                                        <i class="la la-newspaper-o"></i>
-                                    </div>
-                                </div>
-                                <div class="col-7 d-flex align-items-center">
-                                    <div class="numbers">
-                                        <p class="card-category">Order</p>
-                                        <h4 class="card-title">{{ total_order }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-               
-
-                
-<!-- 							<div class="col-md-3">
+                <div class="col-md-3">
                     <div class="card card-stats">
                         <div class="card-body ">
                             <div class="row">
                                 <div class="col-5">
                                     <div class="icon-big text-center icon-warning">
-                                        <i class="la la-pie-chart text-warning"></i>
+                                        <i class="la la-cubes text-primary"></i>
                                     </div>
                                 </div>
                                 <div class="col-7 d-flex align-items-center">
                                     <div class="numbers">
-                                        <p class="card-category">Number</p>
-                                        <h4 class="card-title">150GB</h4>
+                                        <p class="card-category">Stocks</p>
+                                        <h4 class="card-title">{{ total_stock }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -106,7 +65,7 @@
                                 <div class="col-7 d-flex align-items-center">
                                     <div class="numbers">
                                         <p class="card-category">Revenue</p>
-                                        <h4 class="card-title">$ 1,345</h4>
+                                        <h4 class="card-title">$ {{ revenue }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -119,88 +78,59 @@
                             <div class="row">
                                 <div class="col-5">
                                     <div class="icon-big text-center">
-                                        <i class="la la-times-circle-o text-danger"></i>
+                                        <i class="la la-newspaper-o text-warning"></i>
                                     </div>
                                 </div>
                                 <div class="col-7 d-flex align-items-center">
                                     <div class="numbers">
-                                        <p class="card-category">Errors</p>
-                                        <h4 class="card-title">23</h4>
+                                        <p class="card-category">Order</p>
+                                        <h4 class="card-title">{{ total_order }}</h4>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card card-stats">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="icon-big text-center">
-                                        <i class="la la-heart-o text-primary"></i>
-                                    </div>
-                                </div>
-                                <div class="col-7 d-flex align-items-center">
-                                    <div class="numbers">
-                                        <p class="card-category">Followers</p>
-                                        <h4 class="card-title">+45K</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-            {% comment %} </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Task</h4>
-                            <p class="card-category">Complete</p>
-                        </div>
-                        <div class="card-body">
-                            <div id="task-complete" class="chart-circle mt-4 mb-3"></div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="legend"><i class="la la-circle text-primary"></i> Completed</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">World Map</h4>
-                            <p class="card-category">
-                            Map of the distribution of users around the world</p>
-                        </div>
-                        <div class="card-body">
-                            <div class="mapcontainer">
-                                <div class="map">
-                                    <span>Alternative content for the map</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+           
             <div class="row row-card-no-pd">
-                <div class="col-md-4">
+                <div class="col-md-8">
                     <div class="card">
-                        <div class="card-body">
-                            <p class="fw-bold mt-1">My Balance</p>
-                            <h4><b>$ 3,018</b></h4>
-                            <a href="#" class="btn btn-primary btn-full text-left mt-3 mb-3"><i class="la la-plus"></i> Add Balance</a>
+                        <div class="card-body p-0">
+                            <p class="fw-bold">Recently ordered</p>
+                            {% comment %} <h4><b>$ 3,018</b></h4>
+                            <a href="#" class="btn btn-primary btn-full text-left mt-3 mb-3"><i class="la la-plus"></i> Add Balance</a> {% endcomment %}
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">User</th>
+                                    <th scope="col">Order Number</th>
+                                    <th scope="col">Order Total</th>
+                                    <th scope="col">Date</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}   
+                                  <tr>
+                                    <th scope="row">{{ order.user }}</th>
+                                    <td>{{ order.order_number }}</td>
+                                    <td>{{ order.order_total }}</td>
+                                    <td>{{ order.created_at }}</td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
                         </div>
                         <div class="card-footer">
                             <ul class="nav">
-                                <li class="nav-item"><a class="btn btn-default btn-link" href="#"><i class="la la-history"></i> History</a></li>
+                                <li class="nav-item"><a class="btn btn-default btn-link" href="{% url "order_management" %}"><i class="la la-history"></i> View all</a></li>
                                 <li class="nav-item ml-auto"><a class="btn btn-default btn-link" href="#"><i class="la la-refresh"></i> Refresh</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5">
+                {% comment %} <div class="col-md-5">
                     <div class="card">
                         <div class="card-body">
                             <div class="progress-card">
@@ -241,21 +171,21 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-3">
+                </div> {% endcomment %}
+                <div class="col-md-4">
                     <div class="card card-stats">
                         <div class="card-body">
-                            <p class="fw-bold mt-1">Statistic</p>
-                            <div class="row">
+                            {% comment %} <p class="fw-bold mt-1">Statistic</p> {% endcomment %}
+                            <div class="row ">
                                 <div class="col-5">
                                     <div class="icon-big text-center icon-warning">
-                                        <i class="la la-pie-chart text-warning"></i>
+                                        <i class="la la-truck text-warning"></i>
                                     </div>
                                 </div>
                                 <div class="col-7 d-flex align-items-center">
                                     <div class="numbers">
-                                        <p class="card-category">Number</p>
-                                        <h4 class="card-title">150GB</h4>
+                                        <p class="card-category">Pending Delivery</p>
+                                        <h4 class="card-title">{{ pending_delivery }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -263,239 +193,54 @@
                             <div class="row">
                                 <div class="col-5">
                                     <div class="icon-big text-center">
-                                        <i class="la la-heart-o text-primary"></i>
+                                        <i class="la la-mail-reply text-danger"></i>
                                     </div>
                                 </div>
                                 <div class="col-7 d-flex align-items-center">
                                     <div class="numbers">
-                                        <p class="card-category">Followers</p>
-                                        <h4 class="card-title">+45K</h4>
+                                        <p class="card-category">Return requested</p>
+                                        <h4 class="card-title">{{ request_refunds_count }}</h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Users Statistics</h4>
-                            <p class="card-category">
-                            Users statistics this month</p>
-                        </div>
-                        <div class="card-body">
-                            <div id="monthlyChart" class="chart chart-pie"></div>
-                        </div>
+                    <hr>
                     </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">2018 Sales</h4>
-                            <p class="card-category">
-                            Number of products sold</p>
-                        </div>
-                        <div class="card-body">
-                            <div id="salesChart" class="chart"></div>
-                        </div>
-                    </div> {% endcomment %}
-                </div>
-
-                <!-- Material Design Icons CDN -->
-
-                
-<div class="p-5">
+<div class="col col-md-12 p-5">
     <canvas id="myChart" aria-label="chart" role="img" width"10px" height="120px"></canvas>
-  </div>
-  
+</div>
+<script>
+const ctx = document.getElementById('myChart');
+const labels = JSON.parse('{{ labels_json|escapejs }}');
+const data = JSON.parse('{{ data_json|escapejs }}');
 
-  
-
-  <script>
-    const ctx = document.getElementById('myChart');
-    const labels = JSON.parse('{{ labels_json|escapejs }}');
-    const data = JSON.parse('{{ data_json|escapejs }}');
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: '# of Orders',
-                data: data,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        precision: 0
-                    }
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Number of Orders',
+            data: data,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
                 }
             }
         }
-    });
+    }
+});
 </script>
 </div>
-{% comment %} 
+               
 
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body">
-                            <table class="table table-head-bg-primary table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">First name</th>
-                                        <th scope="col">Last name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Last login</th>
-                                        <th scope="col">Date Joined</th>
-                                        <th scope="col">Is Acitve</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for user in users %}
-                                    <tr>
-                                        <td>{{ user.first_name}}</td>
-                                        <td>{{ user.last_name}}</td>
-                                        <td>{{ user.email}}</td>
-                                        <td>{{ user.last_login}}</td>
-                                        <td>{{ user.date_joined}}</td>
-                                        <td>{{ user.is_active}}</td>
-                                    </tr>
-                                    {% endfor %}
-                                   
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div> {% endcomment %}
-                {% comment %} <div class="col-md-6">
-                    <div class="card card-tasks">
-                        <div class="card-header ">
-                            <h4 class="card-title">Tasks</h4>
-                            <p class="card-category">To Do List</p>
-                        </div>
-                        <div class="card-body ">
-                            <div class="table-full-width">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <div class="form-check">
-                                                    <label class="form-check-label">
-                                                        <input class="form-check-input  select-all-checkbox" type="checkbox" data-select="checkbox" data-target=".task-select">
-                                                        <span class="form-check-sign"></span>
-                                                    </label>
-                                                </div>
-                                            </th>
-                                            <th>Task</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check">
-                                                    <label class="form-check-label">
-                                                        <input class="form-check-input task-select" type="checkbox">
-                                                        <span class="form-check-sign"></span>
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>Planning new project structure</td>
-                                            <td class="td-actions text-right">
-                                                <div class="form-button-action">
-                                                    <button type="button" data-toggle="tooltip" title="Edit Task" class="btn btn-link <btn-simple-primary">
-                                                        <i class="la la-edit"></i>
-                                                    </button>
-                                                    <button type="button" data-toggle="tooltip" title="Remove" class="btn btn-link btn-simple-danger">
-                                                        <i class="la la-times"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check">
-                                                    <label class="form-check-label">
-                                                        <input class="form-check-input task-select" type="checkbox">
-                                                        <span class="form-check-sign"></span>
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>Update Fonts</td>
-                                            <td class="td-actions text-right">
-                                                <div class="form-button-action">
-                                                    <button type="button" data-toggle="tooltip" title="Edit Task" class="btn btn-link <btn-simple-primary">
-                                                        <i class="la la-edit"></i>
-                                                    </button>
-                                                    <button type="button" data-toggle="tooltip" title="Remove" class="btn btn-link btn-simple-danger">
-                                                        <i class="la la-times"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check">
-                                                    <label class="form-check-label">
-                                                        <input class="form-check-input task-select" type="checkbox">
-                                                        <span class="form-check-sign"></span>
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>Add new Post
-                                            </td>
-                                            <td class="td-actions text-right">
-                                                <div class="form-button-action">
-                                                    <button type="button" data-toggle="tooltip" title="Edit Task" class="btn btn-link <btn-simple-primary">
-                                                        <i class="la la-edit"></i>
-                                                    </button>
-                                                    <button type="button" data-toggle="tooltip" title="Remove" class="btn btn-link btn-simple-danger">
-                                                        <i class="la la-times"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check">
-                                                    <label class="form-check-label">
-                                                        <input class="form-check-input task-select" type="checkbox">
-                                                        <span class="form-check-sign"></span>
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>Finalise the design proposal</td>
-                                            <td class="td-actions text-right">
-                                                <div class="form-button-action">
-                                                    <button type="button" data-toggle="tooltip" title="Edit Task" class="btn btn-link <btn-simple-primary">
-                                                        <i class="la la-edit"></i>
-                                                    </button>
-                                                    <button type="button" data-toggle="tooltip" title="Remove" class="btn btn-link btn-simple-danger">
-                                                        <i class="la la-times"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="card-footer ">
-                            <div class="stats">
-                                <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
-                            </div>
-                        </div>
-                    </div>
-                </div> {% endcomment %}
-            </div>
-        </div>
+               
     </div>
 </div>
 {% endblock content %}

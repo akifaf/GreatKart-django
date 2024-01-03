@@ -1,34 +1,27 @@
 {% extends "admin/base1.html" %}
-{% load static %}
 {% block content %}
-
-<style>
-    .not-visible {
-        display: none;
-    }
-    h5 {
-        color: #cc9000;
-    }
-</style>
 
 <div class="container-fluid">
     {% include "includes/alerts.html" %}
-    <h5>hello</h5>
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div id="alert-box"></div>
-                <div id="image-box" class="mb-3">
-                    <form action="" id="image-form">
+                <div class="card-header">
+                    <div class="card-title">Add Product Gallery</div>
+                </div>
+                <div class="card-body">
+                    <form action="" method="POST" enctype="multipart/form-data" id="image-form">
                         {% csrf_token %}
                         {{ form.as_p }}
+                        {% comment %} <input type="submit" class="btn btn-primary" value="Add Image"> {% endcomment %}
                     </form>
+                    <div id="alert-box"></div>
+                    <div id="image-box" class="mb-3"></div>
+                    <button type="button" class="btn btn-primary mt-3 not-visible" id="confirm-btn">Confirm</button>
                 </div>
             </div>
         </div>
     </div>
-    <button class="btn btn-primary mt-3 not-visible" id="confirm-btn">Confirm</button>
-
 </div>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
@@ -37,19 +30,16 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('heloo world');
-
         const alertBox = document.getElementById('alert-box');
         const imageBox = document.getElementById('image-box');
         const imageForm = document.getElementById('image-form');
         const confirmBtn = document.getElementById('confirm-btn');
         const input = document.getElementById('id_image');
         const csrf = document.getElementsByName('csrfmiddlewaretoken');
-        const csrf_value = csrf[0].value
-        
+        const csrf_value = csrf[0].value;
 
         input.addEventListener('change', () => {
-            console.log('changed');
+            alertBox.innerHTML = "";
             confirmBtn.classList.remove('not-visible');
 
             const imgData = input.files[0];
@@ -71,32 +61,38 @@
                 },
             });
 
-
             confirmBtn.addEventListener('click', () => {
                 cropper.getCroppedCanvas().toBlob((blob) => {
                     const fd = new FormData();
-                    fd.append('csrfmiddlewaretoken', csrf_value)
-                    fd.append('file', blob, 'my-image.png')
+                    fd.append('csrfmiddlewaretoken', csrf_value);
+                    fd.append('image', blob, 'my-image.png');
 
                     $.ajax({
-                        type: 'POST',  // <-- Add a comma here
+                        type: 'POST',
                         url: imageForm.action,
+                        enctype: 'multipart/form-data',
                         data: fd,
-                        success: function(response){
-                            console.log(response);
+                        success: function (response) {
+                            console.log('success', response);
+                            alertBox.innerHTML = `<div class="alert alert-success" role="alert">
+                                                    Successfully saved and cropped the selected image
+                                                </div>`;
+                            window.location.href = `/customadmin/product`;  
                         },
-                        error: function(error){
-                            console.log(error);
+                        error: function (error) {
+                            console.log('error', error);
+                            alertBox.innerHTML = `<div class="alert alert-danger" role="alert">
+                                                    something went wrong
+                                                </div>`;
                         },
                         cache: false,
                         contentType: false,
-                        processData: false
+                        processData: false,
                     });
                 });
             });
         });
     });
 </script>
-
 
 {% endblock content %}

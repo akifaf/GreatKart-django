@@ -17,6 +17,7 @@ urlpatterns = [
     path('my_orders', views.my_orders, name='my_orders'),
     path('my_wallet', views.my_wallet, name='my_wallet'),
     path('my_address', views.my_address, name='my_address'),
+    path('wishlist', views.wishlist, name='wishlist'),
     path('edit_address/<int:id>/', views.edit_address, name='edit_address'),
     path('delete_address/<int:id>/', views.delete_address, name='delete_address'),
     path('edit_profile', views.edit_profile, name='edit_profile'),
