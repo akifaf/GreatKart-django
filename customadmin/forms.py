@@ -48,9 +48,6 @@ class VariationForm(ModelForm):
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
 
-class ProductGalleryForm(ModelForm):
-    pass
-
 class CategoryForm(ModelForm):
     class Meta:
         model = Category
@@ -73,23 +70,3 @@ class OrderForm(ModelForm):
 
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control col-8'})
-            # if field_name in readonly_fields:
-            #     field.widget.attrs['class'] = 'form-control'
-            #     field.widget.attrs['readonly'] = True
-                # field.widget.attrs['class'] = 'form-control col-4'
-
-
-# class CouponForm(ModelForm):
-#     class Meta:
-#         model = Coupon
-#         fields = ['coupon_code', 'is_expired', 'discount', 'minimum_amount']
-
-#     def __init__(self, *args, **kwargs):
-#         super(CouponForm, self).__init__(*args, **kwargs)
-
-#         for name, field in self.fields.items():
-#             field.widget.attrs.update({'class': 'form-control'})
-
-#         # Ensure 'is_expired' is rendered as a checkbox
-#         self.fields['is_expired'].widget = forms.CheckboxInput()
-

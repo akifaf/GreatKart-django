@@ -83,7 +83,6 @@ def admin_dashboard(request):
     for i in sales:
         labels.append(f'{i["month"]} {i["day"]}')
         data.append(i["total_orders"])
-    print(labels, data)
     context = {
         'request_refunds':request_refunds,
         'request_refunds_count':request_refunds_count,
@@ -146,8 +145,6 @@ def sales_report(request):
             # Save the workbook to the HttpResponse
             wb.save(response)
             return response
-        else:
-            print("mainn")
         labels = []
         data = []
         if type == 'weekly':
@@ -162,7 +159,6 @@ def sales_report(request):
             for i in sales:
                 labels.append(f'Week {i["week_number"]}')
                 data.append(i["total_orders"])
-            print(labels, data)
         elif type == 'monthly':
             sales = (
             Order.objects.filter(status="Delivered", created_at__gte=from_date, created_at__lte=to_date)
@@ -175,7 +171,6 @@ def sales_report(request):
             for i in sales:
                 labels.append(f'Month {i["month_number"]}')
                 data.append(i["total_orders"])
-            print(labels, data)
         else:
             sales = (
             Order.objects.filter(status="Delivered", created_at__gte=from_date, created_at__lte=to_date)
@@ -188,7 +183,6 @@ def sales_report(request):
             for i in sales:
                 labels.append(f'Year {i["year"]}')
                 data.append(i["total_orders"])
-            print(labels, data)
         context = {
             'total_orders':total_orders,
             'total_revenue':total_revenue,
@@ -246,7 +240,6 @@ def block_user(request, pk):
     user.save()
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
-    # return redirect('/customadmin/user_management')
 @user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
 @login_required(login_url='/customadmin/admin_login')
 @never_cache
@@ -256,7 +249,6 @@ def unblock_user(request, pk):
     user.is_blocked=False
     user.save()
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-    # return redirect('/customadmin/user_management')
 
 @user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
 @login_required(login_url='/customadmin/admin_login')
@@ -301,61 +293,14 @@ def variation(request):
 def prod_gallery(request):
     products = Product.objects.all().order_by('-id')
     product_gallery = ProductGallery.objects.all().order_by('-product')
-    
-    print(product_gallery)
     context = {
         'products':products,
         'product_gallery':product_gallery
     }
     return render(request, 'admin/product_gallery.html', context)
 
-
-# def image_add(request, pk):
-    
-#     if request.method == 'POST':
-#         form = ImageForm(request.POST, request.FILES)
-#         var = Product.objects.get(id=pk)
-        
-
-#         if form.is_valid():
-#             print("Image prior saved successfully!")
-#             form.save()  
-
-#             print("Image saved successfully!")
-            
-            
-#             return JsonResponse({'message': 'works','img_id':pk})
-            
-#         else:
-#             print("Form is not valid:", form.errors)
-            
-#     else:
-#         form = ImageForm()
-    
-#     context = {'form': form,'img_id':pk}
-#     return render(request, 'admin/image_add.html', context)
-
-
-
-
-# def add_prod_gallery(request):
-#     form = ImageForm(request.POST or None, request.FILES or None)
-#     if form.is_valid():
-#         form.save()
-#         return JsonResponse({'message':'works'})
-#     else:
-#         print(form.errors)
-#         print('not value')
-#     context = {
-#         'form':form
-#     }
-#     return render(request, 'admin/add_prod_gallery.html', context)
-
-
-
 def add_product_gallery(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    print(product)
     if request.method == 'POST':
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
@@ -373,7 +318,6 @@ def add_product_gallery(request, pk):
 
 def delete_image(request, pk):
     image = ProductGallery.objects.get(pk=pk)
-    print(image, 'image')
     image.delete()
     messages.success(request, "Image deleted")
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
@@ -398,12 +342,10 @@ def add_product(request):
             product.image = request.FILES['image']
 
         if Product.objects.filter(product_name=product_name):
-            print("Test", Product.objects.filter(slug=slug))
             messages.error(request, "Product already exists")
             return redirect('/customadmin/add_product')
 
         if Product.objects.filter(slug=slug):
-            print("Test", Product.objects.filter(slug=slug))
             messages.error(request, "Product Slug already exists")
             return redirect('/customadmin/add_product')
         else:
@@ -467,14 +409,6 @@ def add_variation(request):
             product_id = request.POST['product']
             color_value = request.POST['color']
             size_value = request.POST['size']
-            
-            # if len(request.FILES) != 0:
-            #     image = request.FILES['image']
-
-            # image = request.FILES['image']
-            # stock = request.POST['stock']
-            # print(product_id, color_value, size_value, stock)
-            # Retrieve the product, color, and size instances
             product = Product.objects.get(id=product_id)
             color = Color.objects.get(id=color_value)
             size = Size.objects.get(id=size_value)
@@ -483,9 +417,6 @@ def add_variation(request):
                 messages.error(request, "Product Variation already exists")
                 return redirect('add_variation')
             else:
-                # Create a new Variation instance
-                # variation_instance = Variation(product=product, color=color, size=size, stock=stock, image=image)
-                # variation_instance.save()
                 form.save()
                 return redirect('variation')    
     return render(request, 'admin/add_variation.html', context)
@@ -493,7 +424,6 @@ def add_variation(request):
 
 def edit_variation(request, pk):
     variation = Variation.objects.get(pk=pk)
-    print(variation)
     variation_form = VariationForm(instance=variation)
     context ={
         'variation':variation,
@@ -506,8 +436,6 @@ def edit_variation(request, pk):
         stock = request.POST['stock']
 
         if len(request.FILES) != 0:
-            # if len(product.image)>0:
-            #     os.remove(product.image.path)
                 variation.image = request.FILES['image']
         
         product_id = Product.objects.get(pk=product)
@@ -531,11 +459,6 @@ def edit_product(request, pk):
     product = Product.objects.get(pk=pk)
     product_gallery = ProductGallery.objects.filter(product_id=product.id)
     product_form = ProductForm(instance=product)
-    categories = Category.objects.all()
-    print(product_gallery, 'prod_gall')
-    print(product.image)
-    for i in product_gallery:
-        print(i.image)
     context = {
         'product':product,
         'product_form':product_form,
@@ -572,7 +495,6 @@ def edit_product(request, pk):
 @never_cache
 def delete_product(request, pk):
     product = Product.objects.get(pk=pk)
-    print(product.product_name)
     product.deleted = True
     product.save()
     return redirect('/customadmin/product')
@@ -582,7 +504,6 @@ def delete_product(request, pk):
 @never_cache
 def undelete_product(request, pk):
     product = Product.objects.get(pk=pk)
-    print(product.product_name)
     product.deleted = False
     product.save()
     return redirect('/customadmin/product')
@@ -614,7 +535,6 @@ def add_category(request):
             category.cat_image = request.FILES['cat_image']
 
         if Category.objects.filter(slug=slug):
-            print('Test2', Category.objects.filter(slug=slug))
             messages.error(request, "Category Slug already exists")
             return redirect('/customadmin/add_category')
         else:
@@ -677,7 +597,6 @@ def undelete_category(request, pk):
 def order_management(request):
     orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
     request_refunds = Order.objects.filter(refund_requested=True, refund_granted=False)
-    print(request_refunds)
     context = {
         'orders':orders,
         'request_refunds':request_refunds,

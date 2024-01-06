@@ -29,12 +29,4 @@ urlpatterns = [
     path('add_wishlist', views.add_wishlist, name='add_wishlist'),
     path('remove_wishlist/<int:pk>/', views.remove_wishlist, name='remove_wishlist'),
 
-
-    # path('activate/<uidb64>/<token>/', views.activate, name='activate'),
-    # path('otp', views.send_otp, name='otp'),
-    # path('otp_verification',views.otp_verification,name="otp_verification")
-
-    # path('admin_login', views.admin_login, name='admin_login'),
-    # path('admin_dashboard', views.admin_dashboard, name='admin_dashboard'),
-    # path('admin_logout', views.admin_logout, name='admin_logout'),
 ]

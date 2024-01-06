@@ -74,9 +74,7 @@
                         <td > <a href="{% url "view_order_detail" order.order_number %}" class="btn btn-outline-primary">View datails</a></td>
                         {% if order.status == 'Delivered' or order.status == 'Cancelled' or order.status == 'refunded' or order.status == 'Return Initiated' %}
                         <td>  </td>
-                        {% comment %} {% elif order.status == 'Cancelled' %}
-                        <td> <a href="#" class="btn btn-outline-danger">Order Cancelled</a> </td> {% endcomment %}
-                        {% else %}
+                         {% else %}
                         <td> <a href="#" data-toggle="modal" data-target="#confirmationModal{{ order.order_number }}" class="btn btn-outline-danger">Cancel Order?</a> 
                             <div class="modal fade" id="confirmationModal{{ order.order_number }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ order.order_number }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">

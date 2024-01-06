@@ -1,8 +1,6 @@
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
-
 from orders.models import Address
 from .models import Cart, CartItem
 from store.models import Coupon, Product, Variation
@@ -18,8 +16,7 @@ def _cart_id(request):
 
 def add_cart(request, product_id):
     current_user = request.user
-    product = Product.objects.get(id=product_id) #get the product\
-    print(product)
+    product = Product.objects.get(id=product_id)
     # if the user is authenticated
     if current_user.is_authenticated:
         if request.method == "POST":
@@ -151,10 +148,8 @@ def cart(request):
 
 def remove_coupon(request, id):
     cart = Cart.objects.get(pk=id)
-    print(cart.coupon)
     cart.coupon = None
     cart.save()
-    print(cart.coupon)
     messages.success(request, "Coupon removed")
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 

@@ -28,7 +28,6 @@
                                 <a href="{{product.product.get_url}}"><img src="{{product.product.image.url}}" width="150px" ></a>
                             </div>
                             <div class="col-md-8">
-                                {% comment %} <ul class="thumb"> {% endcomment %}
                                     <h3 class="title">{{ product.product.product_name}}</h3>
                                     <div class="rating-star"><span>
                                         <i class="fa fa-star{% if product.product.averageReview < 0.5 %}-o{% elif product.product.averageReview >= 0.5 and product.product.averageReview < 1 %}-half-o {% endif %}"></i>
@@ -41,7 +40,6 @@
                                     <div class="mb-3"> 
                                         <var class="price h4">${{ product.product.price }}</var> 
                                     </div> 
-                                   {% comment %} </ul> {% endcomment %}
                                    <a href="{{product.product.get_url}}" class="btn btn-primary btn-sm p-2 m-2">View details</a>
                                    <a href="{% url 'remove_wishlist' product.id %}" class="btn btn-danger btn-sm p-2">Remove</a>
                               

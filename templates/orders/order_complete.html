@@ -47,10 +47,6 @@
                                     <ul class="list-unstyled mb0">
                                         <li><strong>Order:  </strong>{{ order_number }} </li>
                                         <li><strong>Order Date: </strong>{{ order.created_at }}</li>
-                                        {% comment %} {% if order.payment_method != "COD" %}
-                                        <li><strong>Transaction</strong> {{transID}}</li>    
-                                        <li><strong>Status:</strong> complete</li>                                    
-                                        {% endif %} {% endcomment %}
                                     </ul>
                                 </div>
                             </div>

@@ -18,7 +18,7 @@ import random
 from django.core.mail import send_mail
 import requests
 
-# VERIFICATION EMAIL
+# EMAIL
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -109,12 +109,9 @@ def login(request):
                 return redirect('dashboard')
             
         elif if_user.is_blocked == True:
-            print(if_user.is_blocked)
-            print('I donot know why am here')
             messages.error(request, 'You are blocked')
             return redirect('login')
         else:
-            print('I should be here')
             messages.error(request, 'Invalid Credentials')
             return redirect('login')
     return render (request, 'accounts/login.html')
@@ -281,7 +278,6 @@ def edit_profile(request):
     if request.method == "POST":
         user_form = UserForm(request.POST, request.FILES, instance=request.user)
         if user_form.is_valid():
-            print('mai yaha hoon')
             user_form.save()
             messages.success(request, "Your profile has been updated")        
             return redirect('edit_profile')
@@ -326,14 +322,8 @@ def add_wishlist(request):
 
 def remove_wishlist(request, pk):
     wishlist = Wishlist.objects.get(pk=pk, user=request.user)
-    print(wishlist)
     wishlist.delete()
     return redirect('wishlist')
-
-
-
-
-
 
 @login_required(login_url='login')
 def change_password(request):
@@ -371,16 +361,11 @@ def order_detail(request, order_id):
     }
     return render(request, 'accounts/order_detail.html', context)
 
-    
-
 def cancel_order(request, order_id):
-    print('I was called')
     order = Order.objects.get(order_number=order_id)
     user = order.user
     if order.status:
-        print('I was here')
         order.status = 'Cancelled'
-        print(order.payment_method)
         if order.payment_method != 'COD':
             wallet = Decimal(str(order.order_total)) 
             user.wallet += wallet
@@ -407,7 +392,6 @@ def request_refund(request, order_id):
                 order.refund_requested = True
                 order.status = 'hold'
                 order.save()
-
                 refund = Refund()
                 refund.order = order
                 refund.reason = reason
@@ -419,86 +403,3 @@ def request_refund(request, order_id):
                 messages.error(request, "This order doesnot exists")
                 return redirect('my_orders')
     return render(request, 'accounts/request_refund.html', context)
-
-# # VERIFICATION EMAIL
-# from django.contrib.sites.shortcuts import get_current_site
-# from django.template.loader import render_to_string
-# from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-# from django.utils.encoding import force_bytes
-# from django.contrib.auth.tokens import default_token_generator
-# from django.core.mail import EmailMessage
-
-
-# def register(request):
-#     if request.method == "POST":
-#         form = RegistrationForm(request.POST)
-#         if form.is_valid():
-#             first_name = form.cleaned_data['first_name']
-#             last_name = form.cleaned_data['last_name']
-#             phone_number = form.cleaned_data['phone_number']
-#             email = form.cleaned_data['email']
-#             password = form.cleaned_data['password']
-#             username = email.split("@")[0]
-#             user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
-#             user.phone_number = phone_number
-#             user.save()
-
-#             #USER ACTIVATION
-
-#             current_site = get_current_site(request)
-#             mail_subject = "Please activate your account"
-#             message = render_to_string('accounts/account_verification_email.html', {
-#                 'user': user,
-#                 'domain': current_site,
-#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-#                 'token': default_token_generator.make_token(user),
-#             })
-#             to_email = email
-#             send_email = EmailMessage(mail_subject, message, to=[to_email])
-#             send_email.send()
-#             return redirect('/accounts/login?command=verification&email='+email)
-#     else:
-#         form = RegistrationForm()
-#     context = {
-#         'form':form,
-#     }
-#     return render (request, 'accounts/register.html', context)
-
-# def login(request):
-
-#     if request.method == 'POST':
-#         email = request.POST['email']
-#         password = request.POST['password']
-
-#         user = auth.authenticate(email=email, password=password)
-
-#         if user is not None:
-#             auth.login(request, user)
-#             messages.success(request, "You are Logged In")
-#             return redirect('home')
-#         else:
-#             messages.error(request, 'Invalid Credentials')
-#             return redirect('login')
-#     return render (request, 'accounts/login.html')
-
-
-# def activate(request,uidb64, token):
-#     try:
-#         uid = urlsafe_base64_decode(uidb64).decode()
-#         user = Account._default_manager.get(pk=uid)
-#     except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
-#         user = None
-#     if user is not None and default_token_generator.check_token(user, token):
-#         user.is_active = True
-#         user.save()
-#         messages.success(request, 'Congratulations! Your account is activated.')
-#         return redirect('login')
-#     else:
-#         messages.error(request, "Invalid activation link")
-#         return redirect('register')
-
-# @login_required(login_url='login')
-# def logout(request):
-#     auth.logout(request)
-#     messages.info(request, "You are Logged out")
-#     return redirect('login')

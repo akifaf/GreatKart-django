@@ -20,7 +20,6 @@
                         <th scope="col">Color</th>
                         <th scope="col">Size</th>
                         <th scope="col">Stock</th>
-                        {% comment %} <th scope="col">Deleted</th> {% endcomment %}
                     </tr>
                 </thead>
                 <tbody>
@@ -30,11 +29,6 @@
                         <td>{{ variation.color.color | capfirst }}</td>
                         <td>{{ variation.size.size | upper }}</td>
                         <td>{{ variation.stock }}</td>
-                        {% comment %} {% if category.deleted %}
-                        <td><a href="{% url 'undelete_category' color.pk %}" class="btn btn-primary btn-sm">Add </a></td>
-                        {% else %}
-                        <td><a href="" class="btn btn-danger btn-sm">Delete </a></td>
-                        {% endif %} {% endcomment %}
                     </tr>
                     {% endfor %}
                    

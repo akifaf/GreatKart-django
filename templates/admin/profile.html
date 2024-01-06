@@ -20,9 +20,7 @@
                 <p class="">Email: <b>{{ profile.email}}</b></p>
                 <p class="">Date Joined: <b>{{ profile.date_joined}}</b></p>
                 <p class="">Last Login: <b>{{ profile.last_login}}</b></p>
-                {% comment %} <p class="">Is Active: <b>{% if profile.is_active %}<span class="badge badge-success">d</span>{% else %}<span class="badge badge-danger">x</span></b></p>{% endif %} {% endcomment %}
-                {% comment %} <p class="">Is SuperUser: <b>{% if profile.is_superadmin %}<span class="badge badge-success">d</span>{% else %}<span class="badge badge-danger">x</span></b></p>{% endif %} {% endcomment %}
-              {% if profile.is_active %}
+               {% if profile.is_active %}
             <a href="{% url 'block_user' profile.pk %}" class="btn btn-danger btn-sm">Block </a>
              {% else %}
              <a href="{% url 'unblock_user' profile.pk %}" class="btn btn-success btn-sm"><b>Unblock </a>
