@@ -19,7 +19,9 @@
                     <li>
                         <a href="{{ single_product.image.url }}" target="mainImage"><img src="{{ single_product.image.url }}" alt="Product image"></a>
                         {% for i in product_gallery %}
+                        {% if i.image %}
                         <a href="{{ i.image.url }}" target="mainImage"><img src="{{ i.image.url }}" alt="Product image"></a>
+                        {% endif %}
                         {% endfor %}
                     </li>
                 </ul>
@@ -49,12 +51,23 @@
                     <div class="row">
                         <div class="item-option-select">
                             <h6>Choose Color</h6>
+                            <ul class="thumb">
+                                <li>
+                                    {% for i in variation %}
+                                    {% if i.image %}
+                                    <a href="{{ i.image.url }}" target="mainImage"><img src="{{ i.image.url }}" alt="Product image"></a>
+                                    {% endif %}
+                                    {% endfor %}
+                                </li>
+                            </ul><br>   
+                            <div>
                             <select name="color" class='form-control' required>
                                 <option value="" disabled selected>select</option>
                                 {% for color in colors %}
                                 <option class="choose-color" data-color="{{ color.color__id }}" value="{{ color.color__color | capfirst }}">{{ color.color__color | capfirst }}</option>
                                 {% endfor %}
                             </select>
+                        </div>
                         </div>
                     </div> <!-- row.// -->
                     <div class="row">

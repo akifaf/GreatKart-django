@@ -26,6 +26,20 @@ class Address(models.Model):
     def __str__(self):
         return self.full_name()
 
+class OrderAddress(models.Model):
+    full_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=100)
+    email = models.EmailField()
+    full_address = models.CharField(max_length=200)
+    country = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    pincode = models.IntegerField()
+   
+    def __str__(self):
+        return f'{self.full_name}, {self.full_address}'
+    
+
 class Payment(models.Model):
     payment_id = models.CharField(max_length=100, null=True, blank=True)
     payment_method = models.CharField(max_length=100)
@@ -51,11 +65,12 @@ class Order(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE, blank=True)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
     payment_method = models.CharField(max_length=100)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(OrderAddress, on_delete=models.SET_NULL, blank=True, null=True)
     order_number = models.CharField(max_length=100)
     order_note = models.CharField(max_length=100, blank=True)
     order_total = models.FloatField()
     tax = models.FloatField()
+    coupon_discount = models.FloatField(default=None, blank=True, null=True)
     status = models.CharField(max_length=100, choices=STATUS, default='Ordered')
     ip = models.CharField(blank=True, max_length=20)
     is_ordered = models.BooleanField(default=False)
@@ -63,9 +78,11 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
-
+        
     def __str__(self):
-        return self.user.first_name    
+        return self.address or ''
+    
+
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from carts.views import _cart_id
-from carts.models import CartItem
+from carts.models import CartItem, Wishlist
 from orders.models import OrderProduct
 from store.forms import ReviewForm
 from .models import Product, Category, ProductGallery, ReviewRating, Variation
@@ -14,7 +14,10 @@ from django.views.decorators.http import require_POST
 def store(request, category_slug=None):
     categories = None
     products = None
-
+    try:
+        wishlist = Wishlist.objects.filter(user=request.user)
+    except:
+        pass
     if category_slug != None:
         categories = get_object_or_404(Category, slug=category_slug)
         products = Product.objects.filter(category=categories, deleted=False, category__deleted=False)
@@ -38,6 +41,8 @@ def store(request, category_slug=None):
 def product_detail(request, category_slug, product_slug):
     try:
         single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
+        variation = Variation.objects.filter(product=single_product)
+        print(variation)
         colors = Variation.objects.filter(product=single_product).values('color__id','color__color').distinct
         sizes = Variation.objects.filter(product=single_product).values('size__id', 'size__size', 'color__id').distinct
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()   
@@ -60,6 +65,7 @@ def product_detail(request, category_slug, product_slug):
 
 
     context = {
+        'variation':variation,
         'single_product':single_product,
         'colors':colors,
         'sizes':sizes,

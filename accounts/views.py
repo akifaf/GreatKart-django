@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import  render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
@@ -10,6 +10,7 @@ from carts.views import _cart_id
 from carts.models import Cart, CartItem, Wishlist
 from orders.forms import AddressForm, RefundForm
 from orders.models import Address, Order, OrderProduct, Refund
+from store.models import Product
 from .models import Account
 from .forms import RegistrationForm, UserForm
 
@@ -296,14 +297,41 @@ def edit_profile(request):
 def wishlist(request):
     try:
         wishlist = Wishlist.objects.filter(user=request.user)
-        print(wishlist)
     except:
-        print('ahdfo')
         pass
     context = {
         'wishlist':wishlist
     }
     return render(request, 'accounts/my_wishlist.html', context)
+
+@login_required(login_url='login')
+def add_wishlist(request):
+    pid = request.GET['product']
+    product = Product.objects.get(pk=pid)
+    data = {}
+    checkw = Wishlist.objects.filter(product=product, user=request.user).count()
+    if checkw > 0:
+        data = {
+            'bool':False
+        }
+    else:
+        wishlist = Wishlist.objects.create(
+            product=product,
+            user=request.user
+        )
+        data = {
+            'bool':True
+        }
+    return JsonResponse(data)
+
+def remove_wishlist(request, pk):
+    wishlist = Wishlist.objects.get(pk=pk, user=request.user)
+    print(wishlist)
+    wishlist.delete()
+    return redirect('wishlist')
+
+
+
 
 
 

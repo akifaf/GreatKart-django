@@ -29,7 +29,7 @@ class Product(models.Model):
     description = models.TextField(max_length=500, blank=True)
     price = models.IntegerField()
     image = models.ImageField(upload_to='photos/products')
-    stock = models.IntegerField()
+    stock = models.IntegerField(default=0)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -65,6 +65,7 @@ class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True)
     size = models.ForeignKey(Size, on_delete=models.CASCADE, null=True)
+    image = models.ImageField(upload_to='variation/products/', max_length=255, null=True)
     stock = models.IntegerField()
 
     def __str__(self):
@@ -75,7 +76,7 @@ class ProductGallery(models.Model):
     image = models.ImageField(upload_to='store/products/', max_length=255)
 
     def __str__(self):
-        return self.product.product_name
+        return self.product.product_name 
     
     class Meta:
         verbose_name = 'productgallery'

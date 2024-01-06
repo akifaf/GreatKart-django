@@ -17,7 +17,6 @@ urlpatterns = [
     path('my_orders', views.my_orders, name='my_orders'),
     path('my_wallet', views.my_wallet, name='my_wallet'),
     path('my_address', views.my_address, name='my_address'),
-    path('wishlist', views.wishlist, name='wishlist'),
     path('edit_address/<int:id>/', views.edit_address, name='edit_address'),
     path('delete_address/<int:id>/', views.delete_address, name='delete_address'),
     path('edit_profile', views.edit_profile, name='edit_profile'),
@@ -26,6 +25,9 @@ urlpatterns = [
     path('cancel_order/<int:order_id>/', views.cancel_order, name='cancel_order'),
     path('request_refund/<int:order_id>/', views.request_refund, name='request_refund'),
     
+    path('wishlist', views.wishlist, name='wishlist'),
+    path('add_wishlist', views.add_wishlist, name='add_wishlist'),
+    path('remove_wishlist/<int:pk>/', views.remove_wishlist, name='remove_wishlist'),
 
 
     # path('activate/<uidb64>/<token>/', views.activate, name='activate'),

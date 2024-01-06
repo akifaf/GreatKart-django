@@ -11,60 +11,26 @@
                     <div class="card-title">Add Variation</div>
                     <hr>
                 <div class="card-body">
-                    <form action="" method='POST'>
+                    <form action="" method='POST' enctype="multipart/form-data"  id="image-form">
                         {% csrf_token %}
+
+                        
+                        {% for field in variation_form %}
                         <div class="form-group from-show-notify row">
                             <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="product">Product :</label>
+                                <label for="product_name">{{ field.label}} :</label>
                             </div>
                             <div class="col-lg-6 col-md-9 col-sm-12">
-                                <select name="product" class="form-control">
-                                    {% for product in products %}
-                                    <option value="{{ product.id }}"> {{ product.product_name }} </option>
-                                    {% endfor %}
-                                </select>
+                                {{ field }}
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="slug">Color :</label>
-                            </div>
-                            <div class="col-lg-6 col-md-9 col-sm-12">
-                                <select name="color" class="form-control">
-                                    {% for color in colors  %}
-                                    <option value="{{ color.id | capfirst }}">{{ color.color | capfirst }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="slug">Size :</label>
-                            </div>
-                            <div class="col-lg-6 col-md-9 col-sm-12">
-                                <select name="size" class="form-control">
-                                    {% for size in sizes  %}
-                                    <option value="{{ size.id | title }}">{{ size.size |title }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-3 col-md-3 col-sm-12 text-right">
-                                <label for="slug">Stock :</label>
-                            </div>
-                            <div class="col-lg-6 col-md-9 col-sm-12">
-                                <input type="number" class="form-control" Required name="stock">
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-9 col-sm-12">
+                        {% endfor %}
+                        <div class="col-lg-4 col-md-9 col-sm-12 mt-3">
                             <button type='submit' class="btn btn-primary">Save</button>
                         </div>
-                        
                     </form>
                 </div>
-                
-            </div>
+                </div>
         </div>
     </div>
 </div>

@@ -40,7 +40,7 @@ class SizeForm(ModelForm):
 class VariationForm(ModelForm):
     class Meta:
         model = Variation
-        fields = ['product', 'color', 'size', 'stock']
+        fields = ['product', 'color', 'size', 'stock', 'image']
 
     def __init__(self, *args, **kwargs):
         super(VariationForm, self).__init__(*args, **kwargs)

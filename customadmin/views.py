@@ -110,6 +110,7 @@ def sales_report(request):
         order = Order.objects.filter(status="Delivered", created_at__gte=from_date, created_at__lte=to_date)
         total_orders = order.count()
         total_revenue = order.aggregate(total_revenue=Sum('order_total'))['total_revenue']
+        total_revenue = round(total_revenue, 2)
 
         if  request.POST.get('download'):
             print("mai yaha hoon")
@@ -120,11 +121,11 @@ def sales_report(request):
             ws = wb.active
             ws.title = "Report"
 
-            # Add headers
+            # headers
             headers = ["User", "Product", "Price", "Quantity", "Payment method", "Date"]
             ws.append(headers)
 
-            # Add data from the model
+            # data from the model
             for order_product in order_products:
                 ws.append([
                     order_product.order.user.email,
@@ -261,7 +262,7 @@ def unblock_user(request, pk):
 @login_required(login_url='/customadmin/admin_login')
 @never_cache
 def product(request):
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('-id')
     context = {
         'products':products,
     }
@@ -387,8 +388,7 @@ def add_product(request):
         product = Product()
         product_name = request.POST['product_name']
         product.description = request.POST['description']
-        product.price = request.POST['price']
-        product.stock = request.POST['stock']        
+        product.price = request.POST['price']  
         slug = request.POST['slug']
         category = request.POST['category']
         category_id = Category.objects.get(pk=category)
@@ -410,7 +410,7 @@ def add_product(request):
             product.product_name = product_name
             product.slug = slug
             product.save()
-            messages.success(request, "Product added successfully.")
+            return redirect('product')
 
     return render(request, 'admin/add_product.html', context)
 
@@ -451,35 +451,45 @@ def add_size(request):
 @login_required(login_url='/customadmin/admin_login')
 @never_cache
 def add_variation(request):
+    form = VariationForm(request.POST, request.FILES)
+    variation_form = VariationForm()
     products = Product.objects.all()
     colors = Color.objects.all()
     sizes = Size.objects.all()
     context = {
+        'variation_form': variation_form,
         'products': products,
         'colors': colors,
         'sizes': sizes
     }
     if request.method == 'POST':
-        product_id = request.POST['product']
-        color_value = request.POST['color']
-        size_value = request.POST['size']
-        stock = request.POST['stock']
-        print(product_id, color_value, size_value, stock)
-        # Retrieve the product, color, and size instances
-        product = Product.objects.get(id=product_id)
-        color = Color.objects.get(id=color_value)
-        size = Size.objects.get(id=size_value)
-        # Check if the variation already exists
-        if Variation.objects.filter(product=product, color=color, size=size).exists():
-            messages.error(request, "Product Variation already exists")
-            return redirect('add_variation')
-        else:
-            # Create a new Variation instance
-            variation_instance = Variation(product=product, color=color, size=size, stock=stock)
-            variation_instance.save()
-            messages.success(request, "Product variation added successfully.")
-            return redirect('add_variation')    
+        if form.is_valid():
+            product_id = request.POST['product']
+            color_value = request.POST['color']
+            size_value = request.POST['size']
+            
+            # if len(request.FILES) != 0:
+            #     image = request.FILES['image']
+
+            # image = request.FILES['image']
+            # stock = request.POST['stock']
+            # print(product_id, color_value, size_value, stock)
+            # Retrieve the product, color, and size instances
+            product = Product.objects.get(id=product_id)
+            color = Color.objects.get(id=color_value)
+            size = Size.objects.get(id=size_value)
+            # Check if the variation already exists
+            if Variation.objects.filter(product=product, color=color, size=size).exists():
+                messages.error(request, "Product Variation already exists")
+                return redirect('add_variation')
+            else:
+                # Create a new Variation instance
+                # variation_instance = Variation(product=product, color=color, size=size, stock=stock, image=image)
+                # variation_instance.save()
+                form.save()
+                return redirect('variation')    
     return render(request, 'admin/add_variation.html', context)
+
 
 def edit_variation(request, pk):
     variation = Variation.objects.get(pk=pk)
@@ -494,6 +504,12 @@ def edit_variation(request, pk):
         color = request.POST['color']
         size = request.POST['size']
         stock = request.POST['stock']
+
+        if len(request.FILES) != 0:
+            # if len(product.image)>0:
+            #     os.remove(product.image.path)
+                variation.image = request.FILES['image']
+        
         product_id = Product.objects.get(pk=product)
         color_id = Color.objects.get(pk=color)
         size_id = Size.objects.get(pk=size)
@@ -576,7 +592,7 @@ def undelete_product(request, pk):
 @login_required(login_url='/customadmin/admin_login')
 @never_cache
 def category(request):
-    categories = Category.objects.all()
+    categories = Category.objects.all().order_by('-id')
     context = {
         'categories':categories,
     }
@@ -604,7 +620,7 @@ def add_category(request):
         else:
             category.slug = slug
             category.save()
-            messages.success(request, "Category added successfully.")
+            return redirect('category')
 
     return render(request, 'admin/add_category.html', context)
 
@@ -776,8 +792,7 @@ def add_coupon(request):
             coupon.minimum_amount = request.POST['minimum_amount']
             coupon.discount = request.POST['discount']        
             coupon.save()
-            messages.success(request, 'Coupon added successfully')
-            return redirect('add_product')
+            return redirect('coupon')
     else:
         return render(request, 'admin/add_coupon.html')
     

@@ -134,7 +134,7 @@
         {% for product in products %}
         <div class="col-md-4">
             <figure class="card card-product-grid">
-                <div class="img-wrap"> 
+                <div class="img-wrap mt-2"> 
                     
                     <a href="{{product.get_url}}"><img src="{{product.image.url}}"></a>
                     
@@ -148,7 +148,15 @@
                         </div> <!-- price-wrap.// -->
                     </div>
 
-                    <a href="{{ product.get_url }}" class="btn btn-block btn-primary"> View detail </a>
+                    <div class="d-flex align-items-center">
+                        <a href="{{ product.get_url }}" class="btn btn-block btn-primary mr-3">View detail</a>
+                        {% if user.is_authenticated %}
+                            <button type="button" class="btn btn-danger add_wishlist" data-product="{{product.id}}">
+                                <span class="text"><i class="fas fa-heart"></i></span>
+                            </button>
+                        {% endif %}
+                    </div>
+                    
                 </figcaption>
             </figure>
         </div> <!-- col.// -->
@@ -197,4 +205,27 @@
     <!-- ========================= SECTION CONTENT END// ========================= -->
 
 
+    <script>
+        $(document).ready(function() {
+            //Add wishlist
+            $(".add_wishlist").on('click', function(){
+                var _pid=$(this).attr('data-product');
+                var _vm=$(this);
+                
+                $.ajax({
+                    url:"/account/add_wishlist",
+                    data:{
+                        product:_pid
+                    },
+                    dataType:'json',
+                    success:function(res){
+                        if(res.bool==true){
+                            _vm.addClass('disabled').removeClass('add_wishlist');
+                        }
+                    }
+                })
+            });
+    
+        });
+    </script>
 {% endblock content %}

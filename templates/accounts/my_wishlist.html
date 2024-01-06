@@ -4,7 +4,15 @@
 {% block content %}
 <section class="section-content padding-y bg">
     <div class="container">
+        {% if not wishlist %}
+    
+        <h2 class="text-center"> Your wishlist is empty</h2>
+        <br>
+        <div class="text-center">
+            <a href="{% url "store" %}" class="btn btn-primary">Continue Shopping</a>
+        </div>
 
+    {% else %}
         
         <div class="row">
             {% include "includes/alerts.html" %}
@@ -17,10 +25,10 @@
                     {% for product in wishlist %}
                         <div class="row m-3">
                             <div class="col-md-4 text-center">
-                                <img src="{{ product.product.image.url }}" class="img-fluid" width="150px" height="150px">
+                                <a href="{{product.product.get_url}}"><img src="{{product.product.image.url}}" width="150px" ></a>
                             </div>
                             <div class="col-md-8">
-                                <ul class="thumb">
+                                {% comment %} <ul class="thumb"> {% endcomment %}
                                     <h3 class="title">{{ product.product.product_name}}</h3>
                                     <div class="rating-star"><span>
                                         <i class="fa fa-star{% if product.product.averageReview < 0.5 %}-o{% elif product.product.averageReview >= 0.5 and product.product.averageReview < 1 %}-half-o {% endif %}"></i>
@@ -33,10 +41,10 @@
                                     <div class="mb-3"> 
                                         <var class="price h4">${{ product.product.price }}</var> 
                                     </div> 
-                                    <a class="btn  btn-primary btn-sm m-2"> <span class="text">View details</span> </a>
-                                    <a class="btn  btn-danger btn-sm m-2"> <span class="text">Remove</span> </a>
-                                    
-                                </ul>
+                                   {% comment %} </ul> {% endcomment %}
+                                   <a href="{{product.product.get_url}}" class="btn btn-primary btn-sm p-2 m-2">View details</a>
+                                   <a href="{% url 'remove_wishlist' product.id %}" class="btn btn-danger btn-sm p-2">Remove</a>
+                              
                             </div>
                         </div>
                         <hr>
@@ -44,23 +52,8 @@
                 </article>
             </main>
         </div>
+        {% endif %}
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $(".choose-size").hide();
-
-            // Event listener for color selection change
-            $('select[name="color"]').on('change', function() {
-                var selectedColor = $(this).find(':selected').data('color');
-                console.log(selectedColor);
-
-                $(".choose-size").hide();
-                $(".color" + selectedColor).show();
-                console.log(".color" + selectedColor);
-            });
-        });
-    </script>
 </section>
 {% endblock content %}

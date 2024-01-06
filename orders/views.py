@@ -11,7 +11,7 @@ from django.views.decorators.cache import never_cache
 
 from carts.models import Cart, CartItem
 from orders.forms import AddressForm, RefundForm
-from orders.models import Address, Order, OrderProduct, Payment, Refund
+from orders.models import Address, Order, OrderAddress, OrderProduct, Payment, Refund
 from store.models import Product, Variation
 
 # Create your views here.
@@ -60,26 +60,32 @@ def shipping_address(request):
 def place_order(request, total=0, quantity=0):
     current_user = request.user
     cart = Cart.objects.get(user=current_user)
+
     # If the cart is empty redirect back to store
     cart_items = CartItem.objects.filter(user=current_user)
     cart_count = cart_items.count()
     if cart_count <= 0:
-        return redirect('store')
-    
+        return redirect('store')    
     grand_total, total, quantity, tax = cart.calculate_grand_total()    
-    # tax=0
-    # grand_total=0
-    # for cart_item in cart_items:
-    #     total += (cart_item.product.price * cart_item.quantity)
-    #     quantity += cart_item.quantity
-    # tax = (2 * total)/100
-    # grand_total = tax + total
+
     if request.method == "POST":
         data = Order()
         data.user = current_user
         address_id = request.POST['address_id']
-        address = Address.objects.get(id=address_id)  
-        data.address = address      
+        address = Address.objects.get(id=address_id)
+        if cart.coupon is not None:
+            data.coupon_discount = cart.coupon.discount
+        order_address = OrderAddress.objects.create(
+        full_name=address.full_name(),
+        phone_number=address.phone_number,
+        email=address.email,        
+        full_address=address.full_address(),
+        country=address.country,
+        state=address.state,
+        city=address.city,
+        pincode=address.pincode
+        )
+        data.address = order_address      
         data.order_note = request.POST['order_note']
         data.order_total = grand_total
         data.tax = tax
@@ -144,6 +150,7 @@ def cod(request, order_id):
     
     # Clear cart
     CartItem.objects.filter(user=request.user).delete()
+    Cart.objects.filter(user=request.user).delete()
 
     # Send order recieved email to the customer
     mail_subject = "Thank you for your order"
@@ -204,7 +211,8 @@ def payments(request):
 
     # Clear cart
     CartItem.objects.filter(user=request.user).delete()
-
+    Cart.objects.filter(user=request.user).delete()
+    
     # Send order recieved email to the customer
     mail_subject = "Thank you for your order"
     message = render_to_string('orders/order_recieved_email.html', {
