@@ -44,7 +44,7 @@ class Account(AbstractBaseUser):
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
-    phone_number = models.IntegerField(default=0)
+    phone_number = models.CharField(max_length=15, default='')
     address_line_1 = models.CharField(max_length=200, blank=True)
     address_line_2 = models.CharField(max_length=200, blank=True)
     profile_picture = models.ImageField(blank=True, upload_to='userprofile')

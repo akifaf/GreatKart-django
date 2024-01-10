@@ -27,9 +27,13 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
 def register(request):
+    print('am called')
     if request.method == "POST":
+        print('am post called')
+
         form = RegistrationForm(request.POST)
         if form.is_valid():
+            print('valid')
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             phone_number = form.cleaned_data['phone_number']
@@ -43,7 +47,10 @@ def register(request):
             send_otp(request)
             messages.success(request, 'otp is sent to your email please verify')
             return render(request, 'accounts/otp.html' , {'email':email} )
+        else:
+            print(form.errors)
     else:
+        print('else')
         form = RegistrationForm()
     context = {
         'form':form,

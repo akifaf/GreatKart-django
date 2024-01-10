@@ -66,9 +66,12 @@ def admin_dashboard(request):
     request_refunds_count = request_refunds.count()
     orders = Order.objects.filter(status='Delivered')
     total_order = orders.count()
-    orders = Order.objects.filter(Q(status='Ordered') | Q(status='shipped') | Q(status='Processing')).order_by('-created_at')[:4]
     revenue = orders.aggregate(total_revenue=Sum('order_total'))['total_revenue']
-    revenue = round(revenue, 2)
+    orders = Order.objects.filter(Q(status='Ordered') | Q(status='shipped') | Q(status='Processing')).order_by('-created_at')[:4]
+    if revenue is not None:
+        revenue = round(revenue, 2)
+    else:
+        revenue = 0
     labels = []
     data = []
     sales = (

@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['greatkart-course-env.eba-mwpc22dm.us-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -101,7 +101,7 @@ TEMPLATES = [
     },
 ]
 
-SITE_ID = 2
+SITE_ID = 4
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -118,23 +118,23 @@ AUTH_USER_MODEL = 'accounts.Account'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'greatkart',
-#         'USER': 'postgres',
-#         'PASSWORD': 'hellopostakifa',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'greatkart',
+        'USER': 'postgres',
+        'PASSWORD': 'hellopostakifa',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
 
 AUTHENTICATION_BACKENDS = [
     
