@@ -101,7 +101,7 @@ TEMPLATES = [
     },
 ]
 
-SITE_ID = 4
+SITE_ID = 5
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -125,14 +125,25 @@ AUTH_USER_MODEL = 'accounts.Account'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'greatkartdb',
+#         'USER': 'postgres',
+#         'PASSWORD': 'hellopostakifa',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'greatkart',
-        'USER': 'postgres',
-        'PASSWORD': 'hellopostakifa',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': 'backend',
+        'USER': 'mysuperuser',
+        'PASSWORD': 'myusersuper',
+        'HOST': 'backend.c5c42kskuh40.us-east-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -145,7 +156,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
     
 ]
-
+ 
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
