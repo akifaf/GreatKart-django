@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.db.models import Sum
 from .models import Coupon, Product, Variation, ReviewRating, ProductGallery, Color, Size
+import admin_thumbnails
 
 
+@admin_thumbnails.thumbnail('image')
 class ProductGalleryInline(admin.TabularInline):
     model = ProductGallery
     extra = 1

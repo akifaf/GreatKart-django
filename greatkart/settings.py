@@ -21,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '29(9%u_htxb(fl7c2%r=)f+2yei9vvj%y547m0!q4qai6@x+$'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'whitenoise.runserver_nostatic',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -216,11 +218,11 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-EMAIL_USE_TLS= True
-EMAIL_HOST= 'smtpd.gmail.com'
-EMAIL_HOST_USER= 'fathimaakifa35@gmail.com'
-EMAIL_HOST_PASSWORD= 'obqf ltlz bkii hoge'
-EMAIL_PORT= '587'
+EMAIL_USE_TLS= config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST= config('EMAIL_HOST')
+EMAIL_HOST_USER= config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD= config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT= config('EMAIL_PORT', cast=int)
 
 AWS_ACCESS_KEY_ID = 'AKIA5OBHBUGLCZYXJBNU '
 AWS_SECRET_ACCESS_KEY = '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'
