@@ -21,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = '29(9%u_htxb(fl7c2%r=)f+2yei9vvj%y547m0!q4qai6@x+$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -216,11 +216,11 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-EMAIL_USE_TLS= config('EMAIL_USE_TLS', cast=bool)
-EMAIL_HOST= config('EMAIL_HOST')
-EMAIL_HOST_USER= config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD= config('EMAIL_HOST_PASSWORD')
-EMAIL_PORT= config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS= True
+EMAIL_HOST= 'smtpd.gmail.com'
+EMAIL_HOST_USER= 'fathimaakifa35@gmail.com'
+EMAIL_HOST_PASSWORD= 'obqf ltlz bkii hoge'
+EMAIL_PORT= '587'
 
 AWS_ACCESS_KEY_ID = 'AKIA5OBHBUGLCZYXJBNU '
 AWS_SECRET_ACCESS_KEY = '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'
