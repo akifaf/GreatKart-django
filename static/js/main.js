@@ -53,7 +53,7 @@ input.addEventListener('change', ()=>{
                     alertBox.innerHTML = `<div class="alert alert-success" role="alert">
                                             Successfully saved and cropped the selected image
                                         </div>`
-                                        window.location.href = `/variant/image_list/${imgId}`;
+                                        window.location.href = `/customadmin/prod_gallery`;
                                            
                 },
                 
@@ -69,37 +69,4 @@ input.addEventListener('change', ()=>{
             })
         })
     })
-    var cropper = $image.data('cropper');
-
-        confirmBtn.addEventListener('click', () => {
-            cropper.getCroppedCanvas().toBlob((blob) => {
-                console.log('confirmed');
-                const fd = new FormData();
-                fd.append('csrfmiddlewaretoken', csrf[0].value);
-                fd.append('image', blob, 'my-image.webp'); // Use .webp extension
-
-                $.ajax({
-                    type: 'POST',
-                    url: imageForm.action,
-                    enctype: 'multipart/form-data',
-                    data: fd,
-                    success: function(response) {
-                        console.log('success', response);
-                        alertBox.innerHTML = `<div class="alert alert-success" role="alert">
-                                                Successfully saved and cropped the selected image
-                                            </div>`;
-                        window.location.href = `/variant/image_list/${imgId}`;
-                    },
-                    error: function(error) {
-                        console.log('error', error);
-                        alertBox.innerHTML = `<div class="alert alert-danger" role="alert">
-                                                Ups...something went wrong
-                                            </div>`;
-                    },
-                    cache: false,
-                    contentType: 'image/webp', // Set the correct content type for WebP
-                    processData: false,
-                });
-            });
-        });
     });
