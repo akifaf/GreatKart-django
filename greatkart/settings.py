@@ -128,7 +128,7 @@ AUTH_USER_MODEL = 'accounts.Account'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'greatkartdb',
+        'NAME': 'greatkart',
         'USER': 'postgres',
         'PASSWORD': 'hellopostakifa',
         'HOST': 'localhost',
