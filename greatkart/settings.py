@@ -28,6 +28,7 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['http://44.203.93.224/']
 
 # Application definition
 
