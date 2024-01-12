@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'whitenoise.runserver_nostatic',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -60,7 +59,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -103,7 +101,7 @@ TEMPLATES = [
     },
 ]
 
-SITE_ID = 5
+SITE_ID = 4
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -127,25 +125,14 @@ AUTH_USER_MODEL = 'accounts.Account'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'greatkartdb',
-#         'USER': 'postgres',
-#         'PASSWORD': 'hellopostakifa',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'backend',
-        'USER': 'mysuperuser',
-        'PASSWORD': 'myusersuper',
-        'HOST': 'backend.c5c42kskuh40.us-east-1.rds.amazonaws.com',
-        'PORT': '5432',
+        'NAME': 'greatkartdb',
+        'USER': 'postgres',
+        'PASSWORD': 'hellopostakifa',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -158,7 +145,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
     
 ]
- 
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -223,13 +210,3 @@ EMAIL_HOST= config('EMAIL_HOST')
 EMAIL_HOST_USER= config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD= config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT= config('EMAIL_PORT', cast=int)
-
-AWS_ACCESS_KEY_ID = 'AKIA5OBHBUGLCZYXJBNU '
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'backends3'
-AWS_S3_SIGNATURE_NAME = 's3v4',
-AWS_S3_REGION_NAME = 'us-east-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL =  None
-AWS_S3_VERITY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
