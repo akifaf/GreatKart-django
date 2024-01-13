@@ -133,18 +133,18 @@ def cart(request):
             cart_items = CartItem.objects.filter(cart=cart_obj, is_active=True)               
             grand_total, total, quantity, tax = cart_obj.calculate_grand_total()
 
+        context = {
+            'cart': cart_obj,
+            'total': total,
+            'quantity': quantity,
+            'cart_items': cart_items,
+            'tax': tax,
+            'grand_total': grand_total,
+        }
+        return render(request, 'store/cart.html', context)
     except ObjectDoesNotExist:
-        pass
+        return render(request, 'store/cart.html')
 
-    context = {
-        'cart': cart_obj,
-        'total': total,
-        'quantity': quantity,
-        'cart_items': cart_items,
-        'tax': tax,
-        'grand_total': grand_total,
-    }
-    return render(request, 'store/cart.html', context)
 
 def remove_coupon(request, id):
     cart = Cart.objects.get(pk=id)

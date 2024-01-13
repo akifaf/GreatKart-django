@@ -126,16 +126,28 @@ AUTH_USER_MODEL = 'accounts.Account'
 #     }
 # }
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'databasegk',
+        'NAME': 'greatkart',
         'USER': 'postgres',
-        'PASSWORD': 'myusersuper',
-        'HOST': 'databasegk.c5c42kskuh40.us-east-1.rds.amazonaws.com',
+        'PASSWORD': 'hellopostakifa',
+        'HOST': 'localhost',
         'PORT': '5432'
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'databasegk',
+#         'USER': 'postgres',
+#         'PASSWORD': 'myusersuper',
+#         'HOST': 'databasegk.c5c42kskuh40.us-east-1.rds.amazonaws.com',
+#         'PORT': '5432'
+#     }
+# }
 
 AUTHENTICATION_BACKENDS = [
     
