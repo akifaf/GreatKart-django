@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+    <title>Invoice GreatKart</title>
+    <style>
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        a {
+            text-decoration: underline;
+        }
+
+        body {
+            position: relative;
+            margin: 0 auto;
+            color: #001028;
+            background: #FFFFFF;
+            font-family: 'Montserrat';
+            font-size: 14px;
+        }
+
+        header {
+            padding: 10px 0;
+            margin-bottom: 30px;
+        }
+
+        #logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #logo img {
+            width: 90px;
+        }
+
+        h1 {
+            color: #5D6975;
+            font-size: 2.4em;
+            line-height: 1.4em;
+            font-weight: normal;
+            text-align: center;
+            margin: 0 0 20px 0;
+        }
+
+        #project {
+            float: left;
+        }
+
+        #project span {
+            color: #5D6975;
+            text-align: right;
+            width: 52px;
+            margin-right: 10px;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        #company {
+            float: right;
+            text-align: right;
+        }
+
+        #project div,
+        #company div {
+            white-space: nowrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            text-align: center;
+            padding: 8px; 
+        }
+
+        table  {
+            color: #5D6975;
+            border: 1px solid #C1CED9;
+            white-space: nowrap;
+            font-weight: normal;
+        }
+
+        table .service,
+        table .desc {
+            text-align: left;
+        }
+
+        table tr {
+            border-bottom: 1px solid #C1CED9;
+        }
+
+        table td.service,
+        table td.desc {
+            vertical-align: top;
+        }
+
+        table td.unit,
+        table td.qty,
+        table td.total {
+            font-size: 1.2em;
+        }
+
+        table td.grand {
+            border-top: 1px solid #5D6975;
+        }
+
+        #notices .notice {
+            color: #5D6975;
+            font-size: 1.2em;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        footer {
+            color: #5D6975;
+            width: 100%;
+            height: 30px;
+            position: absolute;
+            bottom: 0;
+            border-top: 1px solid #C1CED9;
+            padding: 8px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="clearfix">
+        <div id="logo" style="display:flex; justify-content:center; align-items:center;">
+            <div class="invoice-logo"><img src="{% static "/images/logo.png" %}" alt="Invoice logo" style="max-height: 40px;"></div>
+            <h1 class="brand-name">Invoice</h1>
+            {% comment %} <h3>Invoice</h3> {% endcomment %}
+        </div>
+        <div id="company" class="clearfix">
+            <div class="col-lg-4">
+                <div class="invoice-from">
+                    <ul class="list-unstyled text-right">
+                        <li><strong>Invoiced To</strong></li>
+                        <li>{{ order.address.full_name}} </li>
+                        <li>{{ order.address.full_address}} </li>
+                        <li>{{ order.address.state}} </li>
+                        <li>{{ order.address.city}} </li>
+                        <li>{{ order.address.pincode}} </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="project">
+            <div><span>Order:</span>{{ order.order_number }}</div>
+            <div><span>Ordered date:</span>{{ order.created_at }}</div>
+        </div>
+        <br>
+        <br>
+    </header>
+    <div class="table-container" style="overflow-x:auto">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">PRODUCT</th>
+                    <th scope="col">QUANTITY</th>
+                    <th scope="col">PRICE</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_detail %}
+                <tr>
+                    <td>
+                        {{ item.product.product_name}}<br>
+                            color: {{ item.variations.color | capfirst }}<br>
+                            size: {{ item.variations.size | upper }}       
+                    </td>
+                    <td class="text-center">{{ item.quantity}}</td>
+                    <td class="text-center">{{ item.product.price}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2" class="text-right">Sub Total</th>
+                    <th class="text-center">{{ subtotal }}</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-right">Tax:</th>
+                    <th class="text-center">{{ order.tax }}</th>
+                </tr>
+                {% if order.coupon_discount  %}
+                <tr>
+                    <th colspan="2" class="text-right">Coupon Discount:</th>
+                    <th class="text-center text-danger">- {{ order.coupon_discount }}</th>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th colspan="2" class="text-right">Grand Total:</th>
+                    <th class="text-center">{{ order.order_total }}</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <p style="text-align:center;">Thank you for shopping with us</p>
+</body>
+
+</html>

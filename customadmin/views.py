@@ -626,17 +626,24 @@ def view_order_detail(request, order_id):
 @login_required(login_url='/customadmin/admin_login')
 @never_cache
 def change_order_status(request, order_id):
-    orders = Order.objects.get(order_number=order_id)
+    order = Order.objects.get(order_number=order_id)
+    user = order.user
+    print(user)
     if request.method == "POST":        
         status = request.POST['status']
-        orders.status = status
-        orders.save()
+        order.status = status
+        if order.status == 'Cancelled' or order.status == 'refunded':
+            if order.payment_method != 'COD':
+                wallet = Decimal(str(order.order_total)) 
+                user.wallet += wallet
+                user.save()
+        order.save()
         messages.success(request, "Order status has been updated")   
     else:
         order_form = OrderForm(instance=request.user)
-    order_form = OrderForm(instance=orders)
+    order_form = OrderForm(instance=order)
     context = {
-            'orders':orders,
+            'orders':order,
             'order_form':order_form,
         }
        

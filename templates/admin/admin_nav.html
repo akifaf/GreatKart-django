@@ -26,7 +26,7 @@
                 </form>
                 <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
                     
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown show">
                         <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                             {% if usre.image %}
                             <img src="{{ user.image }}" width="36"
@@ -35,7 +35,24 @@
                             <i class="la la-user"></i>
                             {% endif %}
                            <span class='p-0'>Welcome {{ user.username }}</span> </a>
-                        
+                           <ul class="dropdown-menu dropdown-user ">
+                            <li>
+                                <div class="user-box">
+                                    <div class="u-img">
+                                        {% if user.profile_picture %}
+                                        <div class='text-center mb-4'>
+                                            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" width="50" style="border-radius:50%;">
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="u-text">
+                                        <h4>{{ user.username }}</h4>
+                                        <p class="text-muted">{{ user.email }}</p></div>
+                                    </div>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url "admin_logout" %}"><i class="fa fa-power-off"></i> Logout</a>
+                            </ul>
                         <!-- /.dropdown-user -->
                     </li>
                 </ul>
@@ -46,7 +63,7 @@
         <div class="scrollbar-inner sidebar-wrapper">
             <div class="user">
                 <div class="photo">
-                    <img src="{% static "assets/img/profile.jpg" %}" alt="User Photo">
+                    <img src="{{ user.profile_picture.url }}" alt="User Photo">
                 </div>
                 <div class="info">
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">

@@ -42,9 +42,9 @@ class CartItem(models.Model):
         return self.product
     
 class Wishlist(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True)
     
     def __str__(self): 
-        return self.product.product_name
+        return f'{self.user} {self.product}'

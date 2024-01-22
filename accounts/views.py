@@ -26,6 +26,13 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
+#pdf
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+import os
+
 def register(request):
     print('am called')
     if request.method == "POST":
@@ -123,7 +130,6 @@ def login(request):
             return redirect('login')
     return render (request, 'accounts/login.html')
 
-
 def send_otp(request):
     s=""
     for x in range(0,6):
@@ -169,8 +175,6 @@ def dashboard(request):
         'orders_count':orders_count,
     }
     return render(request, 'accounts/dashboard.html', context)
-
-
 
 def forgotPassword(request):
     if request.method == "POST":
@@ -367,6 +371,47 @@ def order_detail(request, order_id):
         'subtotal':subtotal
     }
     return render(request, 'accounts/order_detail.html', context)
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html  = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)#, link_callback=fetch_resources)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+
+def generate_invoice(request, order_id):
+    order_detail = OrderProduct.objects.filter(order__order_number=order_id)
+    try:
+        order = Order.objects.get(order_number=order_id)
+    except:
+        return HttpResponse("505 Not Found")
+    subtotal = 0
+    for i in order_detail:
+        subtotal += i.product.price * i.quantity
+    data = {
+        'order_detail':order_detail,
+        'order':order,
+        'subtotal':subtotal,
+        'order_id':order_id,
+    }
+    pdf = render_to_pdf('accounts/invoice.html', data)
+    # return HttpResponse(pdf, content_type='application/pdf')
+
+    # force download
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "Invoice_%s.pdf" %(data['order_id'])
+        content = "inline; filename='%s'" %(filename)
+        #download = request.GET.get("download")
+        #if download:
+        content = "attachment; filename=%s" %(filename)
+        response['Content-Disposition'] = content
+        return response
+    return HttpResponse("Not found")
+
 
 def cancel_order(request, order_id):
     order = Order.objects.get(order_number=order_id)

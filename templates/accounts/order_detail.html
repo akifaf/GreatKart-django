@@ -81,7 +81,12 @@
                                                 <th colspan="2" class="text-right">Tax:</th>
                                                 <th class="text-center">{{ order.tax }}</th>
                                             </tr>
-                                            
+                                            {% if order.coupon_discount  %}
+                                            <tr>
+                                                <th colspan="2" class="text-right">Coupon Discount:</th>
+                                                <th class="text-center text-danger">- {{ order.coupon_discount }}</th>
+                                            </tr>
+                                            {% endif %}
                                             <tr>
                                                 <th colspan="2" class="text-right">Grand Total:</th>
                                                 <th class="text-center">{{ order.order_total }}</th>
@@ -104,6 +109,10 @@
         <!-- col-lg-12 end here -->
     </div>
     </div>
+    <div class="m-5 text-center">
+		<a href="{% url 'generate_invoice' order.order_number %}" class="btn btn-primary">Download</a>
+	</div>
 
+    
 
 {% endblock content %}

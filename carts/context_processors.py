@@ -29,4 +29,4 @@ def wishlist_counter(request):
                 wishlist_count = wishlist.count()
         except Wishlist.DoesNotExist:
             wishlist_count = 0
-    return dict(wishlist_count=wishlist_count)
+    return {'wishlist_count': wishlist_count}

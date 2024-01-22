@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from orders.models import Address
-from .models import Cart, CartItem
+from .models import Cart, CartItem, Wishlist
 from store.models import Coupon, Product, Variation
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
@@ -26,7 +26,7 @@ def add_cart(request, product_id):
                 try:
                     variation = Variation.objects.get(product=product, color__color__iexact=color, size__size__iexact=size)
                     existing_cart_item = CartItem.objects.filter(product=product, variations=variation, cart=cart, user=current_user).first()
-
+                    
                     if existing_cart_item:
                         # If the cart item with the same variation already exists, increment quantity
                         existing_cart_item.quantity += 1
@@ -37,6 +37,10 @@ def add_cart(request, product_id):
                         cart_item.save()
                 except:
                     pass
+                wishlist = Wishlist.objects.filter(product=product,user=request.user)
+                print(wishlist)
+                if wishlist is not None:
+                    wishlist.delete()
         return redirect('cart')
     
     # if the user is not authenticated

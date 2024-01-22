@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import smtpd
-from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['http://44.203.93.224/']
+CSRF_TRUSTED_ORIGINS = ['https://greatkart.site',]
+
+CORS_ALLOWED_ORIGINS = ['https://greatkart.site',]
+
+CSRF_COOKIE_SECURE=False
 
 # Application definition
 
@@ -103,7 +106,7 @@ TEMPLATES = [
     },
 ]
 
-SITE_ID = 4
+SITE_ID = 2
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -127,28 +130,18 @@ DATABASES = {
     }
 }
 
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'greatkart',
-#         'USER': 'postgres',
-#         'PASSWORD': 'hellopostakifa',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
+#      'default': {
+#           'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#           'NAME': 'greatkart',
+#           'USER': 'mysuperuser',
+#           'PASSWORD': 'myusersuper',
+#           'HOST': 'localhost',
+#           'PORT': ''
+#      }
+#  }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'databasegk',
-#         'USER': 'postgres',
-#         'PASSWORD': 'myusersuper',
-#         'HOST': 'databasegk.c5c42kskuh40.us-east-1.rds.amazonaws.com',
-#         'PORT': '5432'
-#     }
-# }
+
 
 AUTHENTICATION_BACKENDS = [
     
@@ -219,8 +212,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-EMAIL_USE_TLS= True
-EMAIL_HOST= 'smtpd.gmail.com'
-EMAIL_HOST_USER= 'fathimaakifa35@gmail.com'
-EMAIL_HOST_PASSWORD= 'obqf ltlz bkii hoge'
-EMAIL_PORT= '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'fathimaakifa35@gmail.com'
+EMAIL_HOST_PASSWORD = 'obqfltlzbkiihoge'
+EMAIL_PORT = 587
