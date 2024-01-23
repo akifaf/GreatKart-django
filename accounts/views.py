@@ -181,7 +181,7 @@ def forgotPassword(request):
         email = request.POST['email']
         if Account.objects.filter(email=email).exists():
             user = Account.objects.get(email__exact=email)
-            current_site = get_current_site(request)
+            current_site = request.get_host()
             mail_subject = "Reset your password"
             message = render_to_string('accounts/reset_password.html', {
                 'user': user,
