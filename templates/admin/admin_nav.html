@@ -62,9 +62,11 @@
     <div class="sidebar">
         <div class="scrollbar-inner sidebar-wrapper">
             <div class="user">
+                {% if user.profile_picture %}
                 <div class="photo">
                     <img src="{{ user.profile_picture.url }}" alt="User Photo">
                 </div>
+                {% endif %}
                 <div class="info">
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                         <span>

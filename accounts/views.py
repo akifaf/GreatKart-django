@@ -70,7 +70,7 @@ def login(request):
         email = request.POST['email']
         password = request.POST['password']
         user = auth.authenticate(email=email, password=password)
-        if_user = Account.objects.get(email=email)
+        if_user = Account.objects.filter(email=email)
         
         if user is not None and user.is_verified:
             try:
@@ -122,9 +122,9 @@ def login(request):
             except:
                 return redirect('dashboard')
             
-        elif if_user.is_blocked == True:
-            messages.error(request, 'You are blocked')
-            return redirect('login')
+        # elif if_user.is_blocked == True:
+        #     messages.error(request, 'You are blocked')
+        #     return redirect('login')
         else:
             messages.error(request, 'Invalid Credentials')
             return redirect('login')

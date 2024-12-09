@@ -209,9 +209,9 @@ def admin_logout(request):
     messages.info(request, "You are Logged out")
     return redirect('admin_login')
 
-@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
-@login_required(login_url='/customadmin/admin_login')
-@never_cache
+# @user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+# @login_required(login_url='/customadmin/admin_login')
+# @never_cache
 def user_management(request):    
     users = Account.objects.filter(is_superadmin=False)
     total_user =users.count()
@@ -233,9 +233,9 @@ def profile(request, pk):
     }
     return render(request,'admin/profile.html', context)
 
-@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
-@login_required(login_url='/customadmin/admin_login')
-@never_cache
+# @user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+# @login_required(login_url='/customadmin/admin_login')
+# @never_cache
 def block_user(request, pk):
     user = Account.objects.get(pk=pk)
     user.is_active=False
@@ -243,9 +243,9 @@ def block_user(request, pk):
     user.save()
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
-@user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
-@login_required(login_url='/customadmin/admin_login')
-@never_cache
+# @user_passes_test(user_is_admin, login_url='/customadmin/admin_login')
+# @login_required(login_url='/customadmin/admin_login')
+# @never_cache
 def unblock_user(request, pk):
     user = Account.objects.get(pk=pk)
     user.is_active=True
